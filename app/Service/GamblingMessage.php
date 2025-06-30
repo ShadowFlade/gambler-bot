@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use Illuminate\Database\Eloquent\Collection;
+
 class GamblingMessage
 {
 
@@ -28,11 +30,15 @@ class GamblingMessage
         \App\Models\GamblingMessage::create($message);
     }
 
-    public function getMostWins()
+    public function getMostWinsByCount(): Collection
     {
-        \App\Models\GamblingMessage::query()
-            ->selectRaw('count(id) as count')
-            ->where(['is_win','=',true])
-            ->orderBy('id','')
+        $topWinners = \App\Models\GamblingMessage::with('user')
+            ->where('is_win', '=', true)
+            ->select('user_id', DB::raw('COUNT(*) as win_count'))
+            ->groupBy('user_id')
+            ->orderByDesc('win_count')
+            ->limit(3)
+            ->get();
+        return $topWinners;
     }
 }

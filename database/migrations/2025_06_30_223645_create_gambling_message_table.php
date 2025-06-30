@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('emoji_type');
             $table->boolean('is_win');
             $table->string('win_value');
+            $table->string('win_price');
             $table->integer('user_id');
         });
     }
