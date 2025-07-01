@@ -29,7 +29,7 @@ class GamblingMessageController extends Controller
      */
     public function store(StoreGamblingMessageRequest $request)
     {
-        \App\Service\GamblingMessage::handleMessage([
+        \App\Service\Gambling\GamblingMessage::handleMessage([
             'chat_id'    => $request->input('chat_id'),
             'emoji_type' => $request->input('emoji_type'),
             'is_win'     => $request->input('is_win'),
