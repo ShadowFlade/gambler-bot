@@ -16,7 +16,7 @@ class GamblingMessage
 		    'driver' => 'daily',
 		    'name' => 'info',
 		    'path' => storage_path('logs/gambling.log'),
-	    ])->info('start???');
+	    ])->info('start!!!');
         $message = $this->filterCasinoEmojis($message);
         if (is_null($message)) {
             return null;
