@@ -5,12 +5,18 @@ namespace App\Service\Gambling;
 use Illuminate\Support\Facades\DB;
 use App\Service\Gambling;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 
 class GamblingMessage
 {
 
     public function handleMessage(array $message): array|null
     {
+	    Log::build([
+		    'driver' => 'daily',
+		    'name' => 'info',
+		    'path' => storage_path('logs/gambling.log'),
+	    ])->info('start???');
         $message = $this->filterCasinoEmojis($message);
         if (is_null($message)) {
             return null;

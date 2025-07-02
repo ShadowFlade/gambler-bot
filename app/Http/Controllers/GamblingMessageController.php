@@ -8,6 +8,7 @@ use App\Models\GamblingMessage;
 
 class GamblingMessageController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      */
@@ -29,13 +30,15 @@ class GamblingMessageController extends Controller
      */
     public function store(StoreGamblingMessageRequest $request)
     {
-        \App\Service\Gambling\GamblingMessage::handleMessage([
+		$gamblingMessage = new \App\Service\Gambling\GamblingMessage();
+	    $gamblingMessage->handleMessage([
             'chat_id'    => $request->input('chat_id'),
             'emoji_type' => $request->input('emoji_type'),
             'is_win'     => $request->input('is_win'),
             'win_value'  => $request->input('win_value'),
             'user_id'    => $request->input('user_id'),
         ]);
+		echo 'suck';
     }
 
     /**
@@ -69,4 +72,10 @@ class GamblingMessageController extends Controller
     {
         //
     }
+
+	public function authorize()
+	{
+		return true;
+	}
+
 }
