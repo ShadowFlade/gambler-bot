@@ -16,5 +16,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class GamblingMessage extends Model
 {
     use HasFactory;
+    protected $table = 'gambling_message';
     protected $fillable = ['chat_id', 'emoji_type', 'is_win', 'win_value', 'user_id'];
 }

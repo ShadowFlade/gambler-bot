@@ -9,7 +9,7 @@ Route::get('/', function () {
 });
 //
 Route::prefix('api')->group(function () {
-	Route::post('/handle_gambling_message', [GamblingMessageController::class, 'store'])
+	Route::post('/handle_gambling_message', [App\Service\Telegram\Router::class, 'route'])
 		->withoutMiddleware(['web', 'csrf', 'VerifyCsrfToken'])
 		->middleware('api')
 		->name('api.handle_message');

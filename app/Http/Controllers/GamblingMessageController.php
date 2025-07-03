@@ -34,16 +34,12 @@ class GamblingMessageController extends Controller
     {
         $tgMessage = $request->all();
 		$gamblingMessage = new \App\Service\Gambling\GamblingMessage();
-//        Log::build([
-//            'driver' => 'daily',
-//            'name' => 'info',
-//            'path' => storage_path('logs/gambling.log'),
-//        ])->info(['json' => $request->json()]);
-//        Log::build([
-//            'driver' => 'daily',
-//            'name' => 'info',
-//            'path' => storage_path('logs/gambling.log'),
-//        ])->info(['all' => $message]);
+
+        Log::build([
+            'driver' => 'daily',
+            'name' => 'info',
+            'path' => storage_path('logs/message.log'),
+        ])->info(['$tgMessage' => $tgMessage]);
 
 	    $gamblingMessage->handleMessage($tgMessage);
     }
