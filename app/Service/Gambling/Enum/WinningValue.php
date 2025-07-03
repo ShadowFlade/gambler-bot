@@ -2,7 +2,7 @@
 
 namespace App\Service\Gambling\Enum;
 
-enum WinningEnum: int
+enum WinningValue: int
 {
     /**
      * 777 - biggest jackpot

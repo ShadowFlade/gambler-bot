@@ -12,11 +12,11 @@ class GamblingMessage
 
     public function handleMessage(array $message): array|null
     {
-	    Log::build([
-		    'driver' => 'daily',
-		    'name' => 'info',
-		    'path' => storage_path('logs/gambling.log'),
-	    ])->info('start!!!');
+        Log::build([
+            'driver' => 'daily',
+            'name' => 'info',
+            'path' => storage_path('logs/gambling.log'),
+        ])->info($message);
         $message = $this->filterCasinoEmojis($message);
         if (is_null($message)) {
             return null;
@@ -33,14 +33,24 @@ class GamblingMessage
         return $message;
     }
 
-    public function storeMessage(array $message): void
+    public function storeMessage(array $message): bool
     {
-        if ($message['win_value'] == Gambling\Enum\WinningEnum::JACKPOT) {
-            $message['win_price'] = Enum\WinningPrice::JACKPOT;
+
+
+        $newMessage = new \App\Models\GamblingMessage();
+        $newMessage->chat_id = $message['chat']['id'];
+        $newMessage->emoji_type = 'casino'; //TODO[placeholder] - determine type of emoji
+        $resultDicValues = $message['dice']['value'];
+        $newMessage->is_win = $this->isWin($resultDicValues);
+        $newMessage->win_value = $resultDicValues;
+
+        if ($resultDicValues == Gambling\Enum\WinningValue::JACKPOT) {
+            $newMessage->win_price = Enum\WinningPrice::JACKPOT;
         } else {
-            $message['win_price'] = Enum\WinningPrice::DEFAULT;
+            $newMessage->win_price = Enum\WinningPrice::DEFAULT;
         }
-        \App\Models\GamblingMessage::create($message);
+        $isSuccess = $newMessage->saveOrFail();
+        return $isSuccess;
     }
 
     public function getMostWinsByCount(): object
@@ -61,19 +71,19 @@ class GamblingMessage
             ->count();
         $result = (object)[
             'win_percent' => [],
-            'win_count'   => []
+            'win_count' => []
         ];
 
         foreach ($topWinners as $topWinner) {
 
             $userWinCount = $totalUsersTriesCount[$topWinner->user_id];
             $userPercentStats = (object)[
-                'name'           => $topWinner->user->name,
+                'name' => $topWinner->user->name,
                 'userWinPercent' => 0,
             ];
             $userCountStats = (object)[
-                'userWinCount'   => $userWinCount,
-                'name'           => $topWinner->user->name,
+                'userWinCount' => $userWinCount,
+                'name' => $topWinner->user->name,
             ];
             if ($userWinCount != 0) {
                 $userWinPercent = ($topWinner->win_count
@@ -101,5 +111,12 @@ class GamblingMessage
             ->limit(3)
             ->get();
         return $topWinners;
+    }
+
+    private function isWin(int $tgWinValue): bool
+    {
+        $allDiceWinsEnumCases = Enum\WinningValue::cases();
+        $allDiceWins = array_column($allDiceWinsEnumCases, 'value');
+        return in_array($tgWinValue, $allDiceWins);
     }
 }
