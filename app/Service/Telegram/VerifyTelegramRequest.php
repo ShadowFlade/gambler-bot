@@ -22,13 +22,13 @@ class VerifyTelegramRequest
 //			'path' => storage_path('logs/request.log'),
 //		])->info(['$request' => $request]);
 
-//		if (!$this->isTelegramIP($request->ip())) {
-//			abort(403, 'Invalid origin');
-//		}
-//
-//		if ($request->header('X-Telegram-Bot-Api-Secret-Token') !== $this->secret_token) {
-//			abort(403, 'Invalid token');
-//		}
+		if (!$this->isTelegramIP($request->ip())) {
+			abort(403, 'Invalid origin');
+		}
+
+		if ($request->header('X-Telegram-Bot-Api-Secret-Token') !== $this->secret_token) {
+			abort(403, 'Invalid token');
+		}
 
 		// 3. Validate data structure
 		if (!$this->isValidTelegramData($request->all())) {

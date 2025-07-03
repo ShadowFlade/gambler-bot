@@ -51,6 +51,11 @@ class GamblingMessage
 
     public function storeMessage(array $message): bool
     {
+	    Log::build([
+		    'driver' => 'daily',
+		    'name' => 'info',
+		    'path' => storage_path('logs/store_message_before.log'),
+	    ])->info(['$message' => $message]);
         $newMessage = new \App\Models\GamblingMessage();
         $newMessage->chat_id = $message['chat']['id'];
         $newMessage->emoji_type = 'casino'; //TODO[placeholder] - determine type of emoji
@@ -64,12 +69,12 @@ class GamblingMessage
         } else {
             $newMessage->win_price = Enum\WinningPrice::DEFAULT;
         }
-        $isSuccess = $newMessage->saveOrFail();
+	    $isSuccess = $newMessage->saveOrFail();
         Log::build([
             'driver' => 'daily',
             'name' => 'info',
             'path' => storage_path('logs/store_message.log'),
-        ])->info(['$isSuccess' => $isSuccess]);
+        ])->info(['$isSuccess' => $isSuccess,'new id' =>$newMessage->id]);
         return $isSuccess;
     }
 
