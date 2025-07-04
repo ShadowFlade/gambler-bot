@@ -1937,7 +1937,6 @@
                     <div class="resource-icon">📋</div>
                     <div>
                         <h3>Примечания к релизу</h3>
-                        <div class="description">Stay updated with latest features, improvements, and bug fixes</div>
                     </div>
                 </div>
                 <div class="resource-links">
