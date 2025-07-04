@@ -37,7 +37,7 @@ class User
 
         if (!empty($user->id)) {
             $tgBot = new Bot($chatId);
-            $tgBot->sendMessage(['Теперь ты лудоман!']);
+            $tgBot->sendMessage('Теперь ты лудоман!');
         }
 
     }
