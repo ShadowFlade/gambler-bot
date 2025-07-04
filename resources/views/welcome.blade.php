@@ -1476,324 +1476,491 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             color: #333;
-            background-color: #f8fafc;
-            padding: 2rem;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            padding: 0 1rem;
         }
 
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        /* Header */
+        header {
+            padding: 1.5rem 0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        .logo::before {
+            content: "🤖";
+            font-size: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #1e293b;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            border: 1px solid #bfdbfe;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .hero .highlight {
+            color: #2563eb;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #64748b;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            margin-bottom: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 20rem;
+        }
+
+        .btn-primary {
+            background: #2563eb;
             color: white;
-            padding: 2rem;
+            border: 2px solid #2563eb;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            border-color: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #2563eb;
+            border: 2px solid #2563eb;
+        }
+
+        .btn-secondary:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .stat {
             text-align: center;
         }
 
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2563eb;
         }
 
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
+        .stat-label {
+            color: #64748b;
+            font-size: 0.875rem;
         }
 
-        .content {
-            padding: 2rem;
+        /* Features Section */
+        .features {
+            padding: 4rem 0;
         }
 
-        .release {
+        .section-title {
+            text-align: center;
             margin-bottom: 3rem;
-            border-left: 4px solid #e2e8f0;
-            padding-left: 1.5rem;
         }
 
-        .release:last-child {
-            margin-bottom: 0;
-        }
-
-        .release-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1e293b;
             margin-bottom: 1rem;
         }
 
-        .version {
-            background: #667eea;
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-
-        .date {
+        .section-title p {
             color: #64748b;
-            font-size: 0.875rem;
-            font-weight: 500;
+            font-size: 1.125rem;
         }
 
-        .status {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
         }
 
-        .status.released {
-            background: #dcfce7;
-            color: #166534;
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .status.upcoming {
-            background: #fef3c7;
-            color: #92400e;
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
 
-        .status.in-progress {
-            background: #dbeafe;
-            color: #1e40af;
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
         }
 
-        .release-title {
-            font-size: 1.5rem;
+        .feature-card h3 {
+            font-size: 1.25rem;
             font-weight: 600;
             color: #1e293b;
             margin-bottom: 0.5rem;
         }
 
-        .release-description {
+        .feature-card p {
             color: #64748b;
-            margin-bottom: 1.5rem;
-            font-size: 1rem;
         }
 
-        .features {
-            list-style: none;
+        /* Resources Section */
+        .resources {
+            padding: 4rem 0;
         }
 
-        .features li {
-            position: relative;
-            padding-left: 1.5rem;
-            margin-bottom: 0.75rem;
-            color: #374151;
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
         }
 
-        .features li::before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            color: #667eea;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .feature-type {
-            display: inline-block;
-            padding: 0.125rem 0.5rem;
+        .resource-card {
+            background: white;
             border-radius: 12px;
-            font-size: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .resource-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .resource-icon {
+            font-size: 2rem;
+        }
+
+        .resource-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .resource-card .description {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .resource-links {
+            padding: 0 1.5rem 1.5rem;
+        }
+
+        .resource-links a {
+            display: block;
+            color: #2563eb;
+            text-decoration: none;
+            padding: 0.5rem 0;
             font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .resource-links a:hover {
+            color: #1d4ed8;
+        }
+
+        .resource-links a::before {
+            content: "→ ";
             margin-right: 0.5rem;
         }
 
-        .feature-type.new {
-            background: #dcfce7;
-            color: #166534;
+        /* CTA Section */
+        .cta-section {
+            padding: 4rem 0;
         }
 
-        .feature-type.improvement {
-            background: #dbeafe;
-            color: #1e40af;
+        .cta-box {
+            background: #2563eb;
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            color: white;
         }
 
-        .feature-type.fix {
-            background: #fef2f2;
-            color: #dc2626;
+        .cta-box h2 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
         }
 
-        .feature-type.breaking {
-            background: #fef3c7;
-            color: #92400e;
+        .cta-box p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
         }
 
+        .btn-white {
+            background: white;
+            color: #2563eb;
+            border: 2px solid white;
+        }
+
+        .btn-white:hover {
+            background: #f8fafc;
+        }
+
+        .btn-outline-white {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-outline-white:hover {
+            background: white;
+            color: #2563eb;
+        }
+
+        /* Footer */
+        footer {
+            padding: 2rem 0;
+            border-top: 1px solid #e2e8f0;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #1e293b;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            body {
-                padding: 1rem;
+            .nav-links {
+                display: none;
             }
 
-            .header h1 {
-                font-size: 2rem;
+            .hero h1 {
+                font-size: 2.5rem;
             }
 
-            .content {
-                padding: 1.5rem;
-            }
-
-            .release-header {
+            .cta-buttons {
                 flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
+                align-items: center;
+            }
+
+            .resource-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
             }
         }
     </style>
 </head>
 
 <body>
-<div class="container">
-    <header class="header">
-        <h1>Release Notes</h1>
-        <p>Stay updated with our latest features and improvements</p>
-    </header>
-
-    <main class="content">
-        <!-- Version 2.1.0 -->
-        <section class="release">
-            <div class="release-header">
-                <span class="version">v2.1.0</span>
-                <span class="date">March 15, 2024</span>
-                <span class="status upcoming">Upcoming</span>
-            </div>
-            <h2 class="release-title">Enhanced User Experience</h2>
-            <p class="release-description">
-                Major improvements to user interface and performance optimizations.
-            </p>
-            <ul class="features">
-                <li>
-                    <span class="feature-type new">New</span>
-                    Dark mode support with automatic theme switching
-                </li>
-                <li>
-                    <span class="feature-type new">New</span>
-                    Advanced search functionality with filters and sorting
-                </li>
-                <li>
-                    <span class="feature-type improvement">Improvement</span>
-                    50% faster page load times through code optimization
-                </li>
-                <li>
-                    <span class="feature-type improvement">Improvement</span>
-                    Enhanced mobile responsiveness across all devices
-                </li>
-                <li>
-                    <span class="feature-type new">New</span>
-                    Real-time notifications and activity feed
-                </li>
+<!-- Header -->
+<header>
+    <div class="container">
+        <nav>
+            <a href="https://t.me/ludo1337bot" class="logo">Ludobot</a>
+            <ul class="nav-links">
+                <li><a href="/documentation">Документация</a></li>
+                <li><a href="{{route('releases')}}">Релизы</a></li>
             </ul>
-        </section>
+        </nav>
+    </div>
+</header>
 
-        <!-- Version 2.0.5 -->
-        <section class="release">
-            <div class="release-header">
-                <span class="version">v2.0.5</span>
-                <span class="date">February 28, 2024</span>
-                <span class="status in-progress">In Progress</span>
-            </div>
-            <h2 class="release-title">Security & Performance Update</h2>
-            <p class="release-description">
-                Critical security patches and performance improvements.
-            </p>
-            <ul class="features">
-                <li>
-                    <span class="feature-type fix">Security Fix</span>
-                    Resolved authentication vulnerability in user sessions
-                </li>
-                <li>
-                    <span class="feature-type improvement">Improvement</span>
-                    Database query optimization reducing response time by 30%
-                </li>
-                <li>
-                    <span class="feature-type fix">Bug Fix</span>
-                    Fixed issue with file uploads failing for large files
-                </li>
-                <li>
-                    <span class="feature-type improvement">Improvement</span>
-                    Updated third-party dependencies to latest versions
-                </li>
-            </ul>
-        </section>
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
 
-        <!-- Version 2.0.0 -->
-        <section class="release">
-            <div class="release-header">
-                <span class="version">v2.0.0</span>
-                <span class="date">February 10, 2024</span>
-                <span class="status released">Released</span>
+        <h1><span class="highlight">Лудобот</span></h1>
+        <div class="cta-buttons">
+            <a href="https://t.me/ludo1337bot" class="btn btn-primary" style="display:block;">
+                💬 Начните общаться с ботом в телеграмм.
+            </a>
+            <a href="" class="btn btn-secondary" style="margin-top:2rem">
+                📖 Посмотреть документацию
+            </a>
+            <div class="highlight" style="display:block;margin-top:2rem;max-width:15rem;">В данный момент работает
+                только в групповых чатах.
             </div>
-            <h2 class="release-title">Major Platform Overhaul</h2>
-            <p class="release-description">
-                Complete redesign with new architecture and modern features.
-            </p>
-            <ul class="features">
-                <li>
-                    <span class="feature-type breaking">Breaking</span>
-                    New API endpoints - please update your integrations
-                </li>
-                <li>
-                    <span class="feature-type new">New</span>
-                    Completely redesigned user interface
-                </li>
-                <li>
-                    <span class="feature-type new">New</span>
-                    Advanced analytics dashboard with custom reports
-                </li>
-                <li>
-                    <span class="feature-type new">New</span>
-                    Multi-language support (English, Spanish, French, German)
-                </li>
-                <li>
-                    <span class="feature-type improvement">Improvement</span>
-                    Enhanced data export capabilities with multiple formats
-                </li>
-                <li>
-                    <span class="feature-type new">New</span>
-                    Team collaboration features and shared workspaces
-                </li>
-            </ul>
-        </section>
+        </div>
 
-        <!-- Version 1.9.2 -->
-        <section class="release">
-            <div class="release-header">
-                <span class="version">v1.9.2</span>
-                <span class="date">January 25, 2024</span>
-                <span class="status released">Released</span>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number">дохуя</div>
+                <div class="stat-label">Активных пользователей</div>
             </div>
-            <h2 class="release-title">Bug Fixes & Improvements</h2>
-            <p class="release-description">
-                Minor updates and bug fixes based on user feedback.
-            </p>
-            <ul class="features">
-                <li>
-                    <span class="feature-type fix">Bug Fix</span>
-                    Resolved calendar sync issues with external providers
-                </li>
-                <li>
-                    <span class="feature-type fix">Bug Fix</span>
-                    Fixed email notification delivery delays
-                </li>
-                <li>
-                    <span class="feature-type improvement">Improvement</span>
-                    Enhanced error messages for better user guidance
-                </li>
-                <li>
-                    <span class="feature-type improvement">Improvement</span>
-                    Improved accessibility features for screen readers
-                </li>
-            </ul>
-        </section>
-    </main>
-</div>
+            <div class="stat">
+                <div class="stat-number">99.9%</div>
+                <div class="stat-label">Время бесперебойной работы</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Поддержка</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Resources Section -->
+<section class="resources">
+    <div class="container">
+        <div class="section-title">
+            <h2>Планы по релизам & Документация</h2>
+        </div>
+
+        <div class="resource-grid">
+            <div class="resource-card" id="documentation">
+                <div class="resource-header">
+                    <div class="resource-icon">📖</div>
+                    <div>
+                        <h3>Документация</h3>
+                        <div class="description">Полное руководство по установке, настройке и расширенным функциям</div>
+                    </div>
+                </div>
+                <div class="resource-links">
+                    <a href="/docs/idi_nahuy">Быстрый старт</a>
+                    <a href="/docs/idi_nahuy">API</a>
+                    <a href="/docs/idi_nahuy">Примеры кода</a>
+                </div>
+            </div>
+
+            <div class="resource-card" id="releases">
+                <div class="resource-header">
+                    <div class="resource-icon">📋</div>
+                    <div>
+                        <h3>Примечания к релизу</h3>
+                        <div class="description">Stay updated with latest features, improvements, and bug fixes</div>
+                    </div>
+                </div>
+                <div class="resource-links">
+                    <a href="/releases/#v1">v1</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="logo">Ludobot</div>
+            <div class="footer-links">
+                <a href="/privacy">Политика конфиденциальности</a>
+                <a href="/terms">Пользовательское соглашение</a>
+                <a href="/idi_nahuy">Support</a>
+            </div>
+        </div>
+    </div>
+</footer>
 </body>
 </html>

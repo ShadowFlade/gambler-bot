@@ -1,11 +1,10 @@
 <?php
-//
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\GamblingMessageController;
 
-//
-Route::get('/', [\App\Http\Controllers\Controller::class,'index']);
-//
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', [\App\Http\Controllers\Controller::class, 'index'])->name('home');
+Route::get('/releases', [\App\Http\Controllers\Controller::class, 'releases'])->name('releases');
+
 Route::prefix('api')->group(function () {
 	Route::post(
 		'/handle_gambling_message',
@@ -15,7 +14,7 @@ Route::prefix('api')->group(function () {
 		->middleware(
 			[
 				'api',
-			    \App\Http\Middleware\VerifyTelegramWebhook::class
+				\App\Http\Middleware\VerifyTelegramWebhook::class
 			]
 		) //TODO[изучить]:тут почему-то если вместо
 		// VerifyTelegramWebhook

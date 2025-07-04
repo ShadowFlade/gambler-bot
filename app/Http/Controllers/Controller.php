@@ -10,4 +10,8 @@ class Controller
 	{
 		return view('welcome');
 	}
+	public function releases(Request $request)
+	{
+		return view('releases');
+	}
 }
