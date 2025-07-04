@@ -16,12 +16,6 @@ class VerifyTelegramRequest
 
 	public function handle(\Illuminate\Http\Request $request)
 	{
-//		Log::build([
-//			'driver' => 'daily',
-//			'name' => 'info',
-//			'path' => storage_path('logs/request.log'),
-//		])->info(['$request' => $request]);
-
 		if (!$this->isTelegramIP($request->ip())) {
 			abort(403, 'Invalid origin');
 		}
@@ -30,7 +24,6 @@ class VerifyTelegramRequest
 			abort(403, 'Invalid token');
 		}
 
-		// 3. Validate data structure
 		if (!$this->isValidTelegramData($request->all())) {
 			abort(400, 'Invalid data');
 		}

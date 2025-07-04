@@ -21,6 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'username',
+        'chat_id',//TODO[подумоть]:не проебался ли я тут по архитектуре
+        'tg_user_id'
     ];
 
     /**

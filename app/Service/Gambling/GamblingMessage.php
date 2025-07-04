@@ -12,7 +12,6 @@ class GamblingMessage
 
     public function handleMessage(array $message): array|null
     {
-        $message = $message['message'];
         Log::build([
             'driver' => 'daily',
             'name' => 'info',

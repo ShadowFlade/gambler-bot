@@ -2,6 +2,8 @@
 
 namespace App\Service\Telegram;
 
+use App\Service\Log\RequestLogger;
+use App\Service\Log\TgLogger;
 use Illuminate\Http\Request;
 use App\Service\Gambling\GamblingMessage;
 use App\Service\Telegram\Enum\MessageType;
@@ -10,73 +12,80 @@ use Illuminate\Support\Facades\Log;
 
 class Router
 {
-	public function route(Request $request)
-	{
-		Log::build([
-			'driver' => 'daily',
-			'name'   => 'info',
-			'path'   => storage_path('logs/route_messsage.log'),
-		])->info(['$request' => $request->all()]);
-		$this->handleIncomingTgMessage($request->all()['message']);
-	}
+    public function route(Request $request)
+    {
+        RequestLogger::log($request);
+        $this->handleIncomingTgMessage($request->all()['message']);
+    }
 
-	private function handleIncomingTgMessage(array $message): Response|null
-	{
-		$messageType = $this->determineTypeOfMessage($message);
+    private function handleIncomingTgMessage(array $message): Response|null
+    {
+        $messageType = $this->determineTypeOfMessage($message);
 
-		$resp = null;
-		if ($messageType == MessageType::BOT_COMMAND) {
-			$command = str_replace('/', '', $message['text']);
-			$resp = $this->handleBotCommands($command, $message);
-		} else if ($messageType == MessageType::GAMBLING_MESSAGE) {
-			$gamblingMessage = new GamblingMessage();
-			$resp = $gamblingMessage->handleMessage($message);
-		}
+        $resp = null;
+        if ($messageType == MessageType::BOT_COMMAND) {
+            $command = str_replace('/', '', $message['text']);
+            $this->handleBotCommands($command, $message);
+        } else if ($messageType == MessageType::GAMBLING_MESSAGE) {
+            $gamblingMessage = new GamblingMessage();
+            $resp = $gamblingMessage->handleMessage($message);
+        }
 
-		return $resp;
-	}
+        $response = new Response($resp, 200);
 
-	private function determineTypeOfMessage(array $message): MessageType
+        return $response;
+    }
 
-	{
-		if ($this->isBotCommand($message)) {
-			return MessageType::BOT_COMMAND;
-		} else if ($this->isGamblingMessage($message)) {
-			return MessageType::GAMBLING_MESSAGE;
-		}
-	}
+    private function determineTypeOfMessage(array $message): MessageType
 
-	private function isBotCommand(array $message): bool
-	{
-		$entities = $message['entities'] ?? null;
-		if (!is_null($entities) && count($entities) > 0) {
-			foreach ($entities as $entity) {
-				if ($entity['type'] === 'bot_command') {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+    {
+        if ($this->isBotCommand($message)) {
+            return MessageType::BOT_COMMAND;
+        } else if ($this->isGamblingMessage($message)) {
+            return MessageType::GAMBLING_MESSAGE;
+        }
+    }
 
-	private function isGamblingMessage(array $message): bool
-	{
-		return !empty($message['dice']);
-	}
+    private function isBotCommand(array $message): bool
+    {
+        $entities = $message['entities'] ?? null;
+        if (!is_null($entities) && count($entities) > 0) {
+            foreach ($entities as $entity) {
+                if ($entity['type'] === 'bot_command') {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
-	private function handleBotCommands(string $command, array $message): array
-	{
-		$chatID = $message['chat']['id'];
+    private function isGamblingMessage(array $message): bool
+    {
+        return !empty($message['dice']);
+    }
 
-		if ($command === \App\Servce\Telegram\Enum\BotCommands::REGISTER) {
-			$username = $message['from']['username'];
-			$name = $message['from']['first_name'] . ' ' . $message['from']['last_name'];
-			\App\Service\Telegram\Users\User::register($username, $chatID, $name);
-		} elseif ($command ===
-			\App\Servce\Telegram\Enum\BotCommands::STATISTICS) {
-			$stats = new App\Service\Gambling\Statistics($chatID);
-		}
-	}
+    private function handleBotCommands(string $command, array $message)
+    {
+        TgLogger::log([$command], 'handle_bot_commands');
+
+        $chatID = $message['chat']['id'];
+        if ($command == \App\Service\Telegram\Enum\BotCommands::REGISTER
+                ->value) {
+            $username = $message['from']['username'];
+            $name = $message['from']['first_name'] . ' ' . $message['from']['last_name'];
+            $tgUserId = $message['from']['id'];
+            \App\Service\Telegram\Users\User::register($username, $chatID,
+                $name, $tgUserId);
+            TgLogger::log(
+                [$username, $chatID, $name],
+                'handle_bot_commands'
+            );
+
+        } elseif ($command ==
+            \App\Service\Telegram\Enum\BotCommands::STATISTICS) {
+            $stats = new App\Service\Gambling\Statistics($chatID);
+        }
+    }
 
 
 }

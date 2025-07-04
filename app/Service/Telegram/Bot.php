@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Modules\Notification;
+namespace App\Service\Telegram;
 
 use Illuminate\Support\Facades\Http;
 
 
-class TelegramBot
+class Bot
 {
 
 	private string $baseUrl;

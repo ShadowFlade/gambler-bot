@@ -126,7 +126,11 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
-
     ],
+
+    'logging' => [
+        'IS_LOG_TG' => env('IS_LOG_TG_MESSAGE', 'N'),
+        'IS_LOG_REQUESTS' => env('IS_LOG_REQUESTS', 'N'),
+    ]
 
 ];
