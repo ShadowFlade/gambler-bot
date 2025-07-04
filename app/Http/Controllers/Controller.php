@@ -14,4 +14,8 @@ class Controller
 	{
 		return view('releases');
 	}
+	public function fuckYou(Request $request)
+	{
+		return view('fuck_you');
+	}
 }

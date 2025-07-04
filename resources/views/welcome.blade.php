@@ -1868,7 +1868,7 @@
         <nav>
             <a href="https://t.me/ludo1337bot" class="logo">Ludobot</a>
             <ul class="nav-links">
-                <li><a href="/documentation">Документация</a></li>
+                <li><a href="{{route('fuck_you')}}">Документация</a></li>
                 <li><a href="{{route('releases')}}">Релизы</a></li>
             </ul>
         </nav>
@@ -1926,9 +1926,9 @@
                     </div>
                 </div>
                 <div class="resource-links">
-                    <a href="/docs/idi_nahuy">Быстрый старт</a>
-                    <a href="/docs/idi_nahuy">API</a>
-                    <a href="/docs/idi_nahuy">Примеры кода</a>
+                    <a href="{{route('fuck_you')}}">Быстрый старт</a>
+                    <a href="{{route('fuck_you')}}">API</a>
+                    <a href="{{route('fuck_you')}}">Примеры кода</a>
                 </div>
             </div>
 

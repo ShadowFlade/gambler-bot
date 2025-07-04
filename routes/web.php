@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [\App\Http\Controllers\Controller::class, 'index'])->name('home');
 Route::get('/releases', [\App\Http\Controllers\Controller::class, 'releases'])->name('releases');
+Route::get('/fuck_you', [\App\Http\Controllers\Controller::class,
+                         'fuckYou'])->name('fuck_you');
 
 Route::prefix('api')->group(function () {
 	Route::post(
