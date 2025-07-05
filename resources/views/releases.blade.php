@@ -195,29 +195,46 @@
     </header>
 
     <main class="content">
-        <!-- Version 1.0.0 -->
+        <!-- Version 0.1 -->
         <section class="release">
             <div class="release-header">
-                <span class="version">v1.9.2</span>
+                <span class="version">v0.1</span>
                 <span class="date">05.07.2025</span>
-                <span class="status in-progress">В работе</span>
+                <span class="status.upcoming">Готовится к релизу</span>
             </div>
             <h2 class="release-title">Основной функционал (первый релиз)</h2>
             <p class="release-description">
-                Major release
+                Minor release
             </p>
             <ul class="features">
                 <li>
-                    <span class="feature-type fix">Bug Fix</span>
+                    <span class="feature-type new">Регистрация пользователей</span>
                 </li>
                 <li>
-                    <span class="feature-type fix">Bug Fix</span>
+                    <span class="feature-type new">Статистика по количеству выигрышей (+ процентное соотношение)</span>
                 </li>
                 <li>
-                    <span class="feature-type improvement">Improvement</span>
+                    <span class="feature-type new">Статистика по количеству выигранных денег</span>
+                </li>
+            </ul>
+        </section>
+
+        <section class="release">
+            <div class="release-header">
+                <span class="version">v0.2</span>
+                <span class="date">12.07.2025</span>
+                <span class="status.in-progress">В работе</span>
+            </div>
+            <h2 class="release-title">Дополнения функционала статистики</h2>
+            <p class="release-description">
+                Minor release
+            </p>
+            <ul class="features">
+                <li>
+                    <span class="feature-type new">Персональная статистика</span>
                 </li>
                 <li>
-                    <span class="feature-type improvement">Improvement</span>
+                    <span class="feature-type new">Статистика по типам выигранных слотов</span>
                 </li>
             </ul>
         </section>
