@@ -29,7 +29,7 @@ class Router
 			$tgBot->sendMessage('Наебать меня вздумал? Читай документацию долбоеб. (https://shadowflade.ru/gambler/)');
 			return Response(
 				['SUCCESS' => false,
-				 'ERROR'   => App\Service\Telegram\Enum\Error::NO_PRIVATE_CHAT]
+				 'ERROR'   => \App\Service\Telegram\Enum\Error::NO_PRIVATE_CHAT]
 			);
 		} else if ($messageType == MessageType::GAMBLING_MESSAGE) {
 			$gamblingMessage = new GamblingMessage();
@@ -101,6 +101,24 @@ class Router
 		} elseif ($command ==
 			\App\Service\Telegram\Enum\BotCommands::STATISTICS) {
 			$stats = new App\Service\Gambling\Statistics($chatID);
+			$mostWinsByCounts = $stats->getMostWinsByCount();
+			$mostWinsByMoney = $stats->getMostWinsByMoney();
+			$tgBot = new Bot($chatID);
+			$message = "Топ 3 победителей по проценту выигрышей:\n";
+			foreach ($mostWinsByCounts->win_percent as $winPercent) {
+				$message .= $winPercent->name . ": " . $winPercent->userWinPercent . "%\n";
+			}
+			$message .= "\nТоп 3 победителей по количеству выигрышей:\n";
+			foreach ($mostWinsByCounts->win_count as $winCount) {
+				$message .= $winCount->name . ": " . $winCount->userWinCount . "\n";
+			}
+			$message .= "\nТоп 3 победителей по деньгам";
+			foreach ($mostWinsByMoney as $winMoney) {
+				$message .= $winMoney->name . ": " . $winMoney->win_sum . "\n";
+			}
+
+			$tgBot->sendMessage($message);
+
 		}
 	}
 

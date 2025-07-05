@@ -67,7 +67,8 @@ class Statistics
 			->groupBy('user_id')
 			->orderByDesc('win_sum')
 			->limit(3)
-			->get();
+			->get()
+		;
 		return $topWinners;
 	}
 }
