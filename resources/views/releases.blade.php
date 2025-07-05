@@ -199,7 +199,7 @@
         <section class="release">
             <div class="release-header">
                 <span class="version">v0.1</span>
-                <span class="date">05.07.2025</span>
+                <span class="date">06.07.2025</span>
                 <span class="status.upcoming">Готовится к релизу</span>
             </div>
             <h2 class="release-title">Основной функционал (первый релиз)</h2>
@@ -222,7 +222,7 @@
         <section class="release">
             <div class="release-header">
                 <span class="version">v0.2</span>
-                <span class="date">12.07.2025</span>
+                <span class="date">13.07.2025</span>
                 <span class="status.in-progress">В работе</span>
             </div>
             <h2 class="release-title">Дополнения функционала статистики</h2>
