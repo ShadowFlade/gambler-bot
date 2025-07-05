@@ -30,6 +30,7 @@ class User extends Controller
         $chatId = $request['message']['chat']['id'];
         $username = $request['message']['from']['username'];
         $name = $request['message']['from']['first_name'] . ' ' . $request['message']['from']['last_name'];
+        $tgUserId = $request['message']['from']['id'];
         $user = \App\Service\Gambling\User\User::register(
             $username,
             $chatId,

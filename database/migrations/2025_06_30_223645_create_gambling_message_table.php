@@ -19,7 +19,8 @@ return new class extends Migration
             $table->boolean('is_win');
             $table->string('win_value');
             $table->string('win_price');
-            $table->integer('user_id');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('tg_user_id')->on('users');
         });
     }
 
@@ -30,4 +31,5 @@ return new class extends Migration
     {
         Schema::dropIfExists('gambling_message');
     }
+
 };

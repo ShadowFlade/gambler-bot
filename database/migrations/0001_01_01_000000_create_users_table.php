@@ -16,6 +16,8 @@ return new class extends Migration
             $table->timestamps();
             $table->string('username')->unique();
             $table->string('chat_id');
+            $table->unsignedBigInteger('tg_user_id')->index();
+
         });
 
 	    Schema::create('sessions', function (Blueprint $table) {

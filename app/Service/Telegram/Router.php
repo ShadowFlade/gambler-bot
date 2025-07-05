@@ -83,7 +83,7 @@ class Router
 
 	private function handleBotCommands(string $command, array $message)
 	{
-		TgLogger::log([$command], 'handle_bot_commands');
+		TgLogger::log(['command' => $command, 'message' => $message], 'handle_bot_commands');
 
 		$chatID = $message['chat']['id'];
 		if ($command == \App\Service\Telegram\Enum\BotCommands::REGISTER
@@ -99,10 +99,11 @@ class Router
 			);
 
 		} elseif ($command ==
-			\App\Service\Telegram\Enum\BotCommands::STATISTICS) {
-			$stats = new App\Service\Gambling\Statistics($chatID);
+			\App\Service\Telegram\Enum\BotCommands::STATISTICS->value) {
+			$stats = new \App\Service\Gambling\Statistics($chatID);
 			$mostWinsByCounts = $stats->getMostWinsByCount();
 			$mostWinsByMoney = $stats->getMostWinsByMoney();
+            dd($mostWinsByMoney,$mostWinsByCounts);
 			$tgBot = new Bot($chatID);
 			$message = "Топ 3 победителей по проценту выигрышей:\n";
 			foreach ($mostWinsByCounts->win_percent as $winPercent) {
