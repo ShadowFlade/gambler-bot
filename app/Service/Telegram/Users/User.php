@@ -3,6 +3,7 @@
 namespace App\Service\Telegram\Users;
 
 use App\Models\User as UserModel;
+use App\Service\Log\TgLogger;
 use App\Service\Telegram\Bot;
 
 class User
@@ -25,6 +26,8 @@ class User
         );
 
         if ($isUserExists) {
+	        $tgBot = new Bot($chatId);
+	        $tgBot->sendMessage('Ты уже и так лудик, отъебись от меня!');
             return;
         }
 
