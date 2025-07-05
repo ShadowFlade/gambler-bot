@@ -103,19 +103,22 @@ class Router
 			$stats = new \App\Service\Gambling\Statistics($chatID);
 			$mostWinsByCounts = $stats->getMostWinsByCount();
 			$mostWinsByMoney = $stats->getMostWinsByMoney();
-            dd($mostWinsByMoney,$mostWinsByCounts);
-			$tgBot = new Bot($chatID);
+
+            $tgBot = new Bot($chatID);
 			$message = "Топ 3 победителей по проценту выигрышей:\n";
 			foreach ($mostWinsByCounts->win_percent as $winPercent) {
 				$message .= $winPercent->name . ": " . $winPercent->userWinPercent . "%\n";
 			}
 			$message .= "\nТоп 3 победителей по количеству выигрышей:\n";
-			foreach ($mostWinsByCounts->win_count as $winCount) {
+
+            foreach ($mostWinsByCounts->win_count as $winCount) {
 				$message .= $winCount->name . ": " . $winCount->userWinCount . "\n";
 			}
-			$message .= "\nТоп 3 победителей по деньгам";
+			$message .= "\nТоп 3 победителей по деньгам\n";
+
 			foreach ($mostWinsByMoney as $winMoney) {
-				$message .= $winMoney->name . ": " . $winMoney->win_sum . "\n";
+                $message .= $winMoney->user->name . ": " . $winMoney->win_sum .
+                    "\n";
 			}
 
 			$tgBot->sendMessage($message);

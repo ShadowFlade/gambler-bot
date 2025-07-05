@@ -22,16 +22,15 @@ class GamblingMessage extends Model
     protected $table = 'gambling_message';
     protected $fillable = [
         'chat_id',
-        'tg_user_id',
         'emoji_type',
         'is_win',
         'win_value',
         'user_id',
         'win_price'
     ];
-    protected function user(): HasOne
+    public function user(): HasOne
     {
-        return $this->hasOne(User::class, 'id', 'user_id');
+        return $this->hasOne(User::class, 'tg_user_id', 'user_id');
     }
 
 }
