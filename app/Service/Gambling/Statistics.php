@@ -3,6 +3,7 @@
 namespace App\Service\Gambling;
 
 use App\Models\User;
+use App\Service\Log\TgLogger;
 use App\Service\Telegram\Bot;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
@@ -39,7 +40,12 @@ class Statistics
             'win_percent' => [],
             'win_count'   => []
         ];
-        if ($topWinners->isEmpty()) {
+	    TgLogger::log(
+			[$topWinners,$topWinners->isEmpty(),$topWinners->count()],
+		    "top_winners_debug"
+	    );
+
+	    if ($topWinners->isEmpty()) {
             $message = "Никто из вас неудачников ничего и никогда не выигрывал в своей жизни. Идите умойтесь.";
             $tgBot = new Bot($this->chatID);
             $tgBot->sendMessage($message);

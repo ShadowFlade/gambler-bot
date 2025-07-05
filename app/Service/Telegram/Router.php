@@ -37,9 +37,8 @@ class Router
 		} else if ($messageType ==
 			MessageType::BOT_COMMAND) {
             if(str_contains($message['text'],'@')) {
-                $message['text'] = explode("@", $message['text'])[1];
+                $message['text'] = explode("@", $message['text'])[0];
             }
-            TgLogger::log(['without bot name' => $message['text']]);
 			$command = str_replace('/', '', $message['text']);
 			$this->handleBotCommands($command, $message);
 		}
@@ -110,6 +109,10 @@ class Router
 
             $tgBot = new Bot($chatID);
 			$message = "Топ 3 победителей по проценту выигрышей:\n";
+			TgLogger::log([$mostWinsByCounts], "win_by_count_debug");
+			if(is_null($mostWinsByCounts)) {
+
+			}
 			foreach ($mostWinsByCounts->win_percent as $winPercent) {
 				$message .= $winPercent->name . ": " . $winPercent->userWinPercent . "%\n";
 			}
