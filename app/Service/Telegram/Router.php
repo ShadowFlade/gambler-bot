@@ -36,6 +36,10 @@ class Router
 			$resp = $gamblingMessage->handleMessage($message);
 		} else if ($messageType ==
 			MessageType::BOT_COMMAND) {
+            if(str_contains($message['text'],'@')) {
+                $message['text'] = explode("@", $message['text'])[1];
+            }
+            TgLogger::log(['without bot name' => $message['text']]);
 			$command = str_replace('/', '', $message['text']);
 			$this->handleBotCommands($command, $message);
 		}
