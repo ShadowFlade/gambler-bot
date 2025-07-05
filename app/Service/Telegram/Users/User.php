@@ -22,6 +22,7 @@ class User
         $isUserExists = !empty(
         UserModel::query()
             ->where('username', $username)
+	        ->where('chat_id', $chatId)
             ->first()
         );
 

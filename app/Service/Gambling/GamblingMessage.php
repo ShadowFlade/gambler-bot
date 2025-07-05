@@ -15,7 +15,7 @@ class GamblingMessage
         Log::build([
             'driver' => 'daily',
             'name' => 'info',
-            'path' => storage_path('logs/not_gambling.log'),
+            'path' => storage_path('logs/gambling_message.log'),
         ])->info(['message' => $message]);
         $message = $this->filterCasinoEmojis($message);
         Log::build([
@@ -63,10 +63,10 @@ class GamblingMessage
         $newMessage->win_value = $resultDicValues;
         $newMessage->user_id = $message['from']['id'];
 
-        if ($resultDicValues == Gambling\Enum\WinningValue::JACKPOT) {
-            $newMessage->win_price = Enum\WinningPrice::JACKPOT;
+        if ($resultDicValues == Gambling\Enum\WinningValue::JACKPOT->value) {
+            $newMessage->win_price = Enum\WinningPrice::JACKPOT->value;
         } else {
-            $newMessage->win_price = Enum\WinningPrice::DEFAULT;
+            $newMessage->win_price = Enum\WinningPrice::DEFAULT->value;
         }
 	    $isSuccess = $newMessage->saveOrFail();
         Log::build([

@@ -7,11 +7,13 @@ enum WinningValue: int
     /**
      * 777 - biggest jackpot
      */
-    case JACKPOT = 1;
+    case JACKPOT = 64;//100%
 
-    case CHERRIES = 22;
+    case CHERRIES = 22;//100%
 
-    case BANANAS = 43;
+    case BANANAS = 17;
 
-    case LEMONS = 64;
+	case BARS = 33;//100%
+
+	case LEMONS = 5;
 }

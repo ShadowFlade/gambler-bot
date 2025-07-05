@@ -21,24 +21,35 @@ class Router
 	private function handleIncomingTgMessage(array $message): Response|null
 	{
 		$messageType = $this->determineTypeOfMessage($message);
+		TgLogger::log(
+			[$messageType, $messageType == MessageType::GAMBLING_MESSAGE],
+			'message_type'
+		);
 
 		$resp = null;
+		
 		if ($messageType == MessageType::PRIVATE_MESSAGE) {
 			$chatId = $message['chat']['id'];
 			$tgBot = new Bot($chatId);
 			$tgBot->sendMessage('Наебать меня вздумал? Читай документацию долбоеб. (https://shadowflade.ru/gambler/)');
 			return Response(
-				['SUCCESS' => false,
-				 'ERROR'   => \App\Service\Telegram\Enum\Error::NO_PRIVATE_CHAT]
+				[
+					'SUCCESS' => false,
+					'ERROR'   => \App\Service\Telegram\Enum\Error::NO_PRIVATE_CHAT
+				]
 			);
 		} else if ($messageType == MessageType::GAMBLING_MESSAGE) {
+			TgLogger::log(
+				[$messageType, $messageType == MessageType::GAMBLING_MESSAGE],
+				'am_i_herer'
+			);
 			$gamblingMessage = new GamblingMessage();
 			$resp = $gamblingMessage->handleMessage($message);
 		} else if ($messageType ==
 			MessageType::BOT_COMMAND) {
-            if(str_contains($message['text'],'@')) {
-                $message['text'] = explode("@", $message['text'])[0];
-            }
+			if (str_contains($message['text'], '@')) {
+				$message['text'] = explode("@", $message['text'])[0];
+			}
 			$command = str_replace('/', '', $message['text']);
 			$this->handleBotCommands($command, $message);
 		}
@@ -107,10 +118,10 @@ class Router
 			$mostWinsByCounts = $stats->getMostWinsByCount();
 			$mostWinsByMoney = $stats->getMostWinsByMoney();
 
-            $tgBot = new Bot($chatID);
+			$tgBot = new Bot($chatID);
 			$message = "Топ 3 победителей по проценту выигрышей:\n";
 			TgLogger::log([$mostWinsByCounts], "win_by_count_debug");
-			if(is_null($mostWinsByCounts)) {
+			if (is_null($mostWinsByCounts)) {
 
 			}
 			foreach ($mostWinsByCounts->win_percent as $winPercent) {
@@ -118,14 +129,14 @@ class Router
 			}
 			$message .= "\nТоп 3 победителей по количеству выигрышей:\n";
 
-            foreach ($mostWinsByCounts->win_count as $winCount) {
+			foreach ($mostWinsByCounts->win_count as $winCount) {
 				$message .= $winCount->name . ": " . $winCount->userWinCount . "\n";
 			}
 			$message .= "\nТоп 3 победителей по деньгам\n";
 
 			foreach ($mostWinsByMoney as $winMoney) {
-                $message .= $winMoney->user->name . ": " . $winMoney->win_sum .
-                    "\n";
+				$message .= $winMoney->user->name . ": " . $winMoney->win_sum .
+					"\n";
 			}
 
 			$tgBot->sendMessage($message);
