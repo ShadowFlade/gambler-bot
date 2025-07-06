@@ -14,8 +14,15 @@ class Router
 {
 	public function route(Request $request)
 	{
+		$data = $request->all();
+
 		RequestLogger::log($request);
-		$this->handleIncomingTgMessage($request->all()['message']);
+		$message = $data['message'] ?? $data['edited_message'] ?? null;
+		if (is_null($message)) {
+			TgLogger::log($request,'no_message_data');
+			return;
+		}
+		$this->handleIncomingTgMessage($message);
 	}
 
 	private function handleIncomingTgMessage(array $message): Response|null
