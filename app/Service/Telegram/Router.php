@@ -137,7 +137,7 @@ class Router
                 ->toArray();
 
             $tgBot = new Bot($chatID);
-            $message = "Топ 3 плюсовых игрока:\n";
+            $message = "Статистика:\n";
             TgLogger::log([$mostWinsByCounts], "win_by_count_debug");
             if (is_null($mostWinsByCounts)) {
                 return;
@@ -150,7 +150,7 @@ class Router
                     $balance . '$ ( ' .
                     $mostWinsByCounts->win_count[$userID]->userWinCount . '/'
                     . $mostWinsByCounts->win_percent[$userID]->totalCount . ' ' .
-                    round($winPercentItem->userWinPercent, 4) . '%)';
+                    round($winPercentItem->userWinPercent, 4) . '%)' .
                 "\n";
 
             }
