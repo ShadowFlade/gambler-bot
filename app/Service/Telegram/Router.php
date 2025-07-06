@@ -27,11 +27,11 @@ class Router
 		);
 
 		$resp = null;
-		
+
 		if ($messageType == MessageType::PRIVATE_MESSAGE) {
 			$chatId = $message['chat']['id'];
 			$tgBot = new Bot($chatId);
-			$tgBot->sendMessage('Наебать меня вздумал? Читай документацию долбоеб. (https://shadowflade.ru/gambler/)');
+//			$tgBot->sendMessage('Наебать меня вздумал? Читай документацию долбоеб. (https://shadowflade.ru/gambler/)');
 			return Response(
 				[
 					'SUCCESS' => false,
@@ -60,8 +60,8 @@ class Router
 	}
 
 	private function determineTypeOfMessage(array $message): MessageType
-
 	{
+		TgLogger::log($message, 'type_of_mesage');
 		if ($this->isBotCommand($message)) {
 			return MessageType::BOT_COMMAND;
 		} else if ($this->isGamblingMessage($message)) {
@@ -102,8 +102,16 @@ class Router
 		$chatID = $message['chat']['id'];
 		if ($command == \App\Service\Telegram\Enum\BotCommands::REGISTER
 				->value) {
-			$username = $message['from']['username'];
-			$name = $message['from']['first_name'] . ' ' . $message['from']['last_name'];
+			$username = $message['from']['username'] ?? null;
+			$lastName = $message['from']['last_name'] ?? null;
+
+			$name = $message['from']['first_name'];
+			if (!is_null($lastName)) {
+				$name .= ' ' . $message['from']['last_name'];
+			}
+			if (is_null($username)) {
+				$username = $name;
+			}
 			$tgUserId = $message['from']['id'];
 			\App\Service\Telegram\Users\User::register($username, $chatID,
 				$name, $tgUserId);
@@ -121,9 +129,11 @@ class Router
 			$tgBot = new Bot($chatID);
 			$message = "Топ 3 победителей по проценту выигрышей:\n";
 			TgLogger::log([$mostWinsByCounts], "win_by_count_debug");
-			if (is_null($mostWinsByCounts)) {
 
+			if (is_null($mostWinsByCounts)) {
+				return;
 			}
+
 			foreach ($mostWinsByCounts->win_percent as $winPercent) {
 				$message .= $winPercent->name . ": " . $winPercent->userWinPercent . "%\n";
 			}
@@ -132,11 +142,12 @@ class Router
 			foreach ($mostWinsByCounts->win_count as $winCount) {
 				$message .= $winCount->name . ": " . $winCount->userWinCount . "\n";
 			}
+
 			$message .= "\nТоп 3 победителей по деньгам\n";
 
 			foreach ($mostWinsByMoney as $winMoney) {
 				$message .= $winMoney->user->name . ": " . $winMoney->win_sum .
-					"\n";
+					"$\n";
 			}
 
 			$tgBot->sendMessage($message);

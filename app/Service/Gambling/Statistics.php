@@ -27,7 +27,6 @@ class Statistics
 
         $topWinners = (clone $baseQuery)
             ->where('is_win', true)
-            ->addSelect(DB::raw('COUNT(*) as win_count'))
             ->addSelect(DB::raw('SUM(CASE WHEN is_win = 1 THEN 1 ELSE 0 END) as win_count'))
             ->limit(3)
             ->get()
@@ -41,7 +40,11 @@ class Statistics
             'win_count'   => []
         ];
 	    TgLogger::log(
-			[$topWinners,$topWinners->isEmpty(),$topWinners->count()],
+			[
+				$topWinners->toArray(),
+				$topWinners->isEmpty(),
+				$topWinners->count()
+			],
 		    "top_winners_debug"
 	    );
 

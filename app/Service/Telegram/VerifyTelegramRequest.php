@@ -1,5 +1,6 @@
 <?php
 namespace App\Service\Telegram;
+use App\Service\Log\TgLogger;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\IpUtils;
 
@@ -16,6 +17,13 @@ class VerifyTelegramRequest
 
 	public function handle(\Illuminate\Http\Request $request)
 	{
+		TgLogger::log(
+			[
+				$request->ip(),
+				$request->all(),
+				!$this->isTelegramIP($request->ip())
+			],
+			'first_request');
 		if (!$this->isTelegramIP($request->ip())) {
 			abort(403, 'Invalid origin');
 		}

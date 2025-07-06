@@ -29,7 +29,7 @@ class Bot
 		];
 		$response = Http::post($url, $data);
 
-
+//		return [];
 		return ['SUCCESS' => $response->ok()];
 	}
 }
