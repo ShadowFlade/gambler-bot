@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class Statistics
 {
+    private int $spinPrice = 1;
     public function __construct(private string $chatID) { }
 
     public function getMostWinsByCount(): object|null
@@ -56,16 +57,21 @@ class Statistics
         }
         foreach ($topWinners as $topWinner) {
 
-            $userWinCount = $totalUsersTriesCount[$topWinner->user_id];
+            $totalUserSpinsCount =
+                $totalUsersTriesCount[$topWinner->user_id]['total_count'];
             $userPercentStats = (object)[
                 'name'           => $topWinner->user->name,
                 'userWinPercent' => 0,
+                'spentOnSpins' => $totalUserSpinsCount * $this->spinPrice,
+                'totalCount' => $totalUserSpinsCount,
+
             ];
             $userCountStats = (object)[
                 'userWinCount' => $topWinner->win_count,
                 'name'         => $topWinner->user->name,
             ];
-            if ($userWinCount != 0) {
+
+            if ($topWinner->win_count != 0) {
                 $userWinPercent = ($topWinner->win_count
                         / $totalUsersTriesCount[$topWinner->user_id]['total_count']) * 100;
                 $userPercentStats->userWinPercent = $userWinPercent;
@@ -74,10 +80,10 @@ class Statistics
             } else {
                 $result->win_percent[$topWinner->user_id] = (object)[
                     'name'           => $topWinner->user->name,
-                    'userWinPercent' => "Процент побед примерно -134%. Никогда ничего не выигрывал в своей жизни.",
+                    'userWinPercent' => 0,
                 ];
                 $result->win_count[$topWinner->user_id] = (object)[
-                    'userWinCount' => "Выиграл только пинок по яйцам. Неудачник.",
+                    'userWinCount' => 0,
                     'name'         => $topWinner->user->name,
                 ];
             }
@@ -102,7 +108,6 @@ class Statistics
             )
             ->groupBy('user_id')
             ->orderByDesc('win_sum')
-            ->limit(3)
             ->get();
 //            ->toRawSql();
 //        dd($topWinners);
