@@ -2,6 +2,7 @@
 
 namespace App\Service\Telegram;
 
+use App\Service\Gambling\Enum\Emoji;
 use App\Service\Log\RequestLogger;
 use App\Service\Log\TgLogger;
 use Illuminate\Http\Request;
@@ -87,7 +88,8 @@ class Router
 
     private function isGamblingMessage(array $message): bool
     {
-        return !empty($message['dice']);
+        return !empty($message['dice']) && $message['dice']['emoji'] ===
+            Emoji::CASINO->value;
     }
 
     private function isPrivateMessage(array $message): bool

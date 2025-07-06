@@ -11,7 +11,6 @@ enum WinningValue: int
 
     case CHERRIES = 22;//100%
 
-
 	case BARS = 1;//100%
 
 	case LEMONS = 43;//это не выигрыш вроде как
