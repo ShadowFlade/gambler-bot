@@ -2,6 +2,7 @@
 
 namespace App\Service\Telegram;
 
+use App\Models\User as UserModel;
 use App\Service\Gambling\Enum\Emoji;
 use App\Service\Log\RequestLogger;
 use App\Service\Log\TgLogger;
@@ -156,6 +157,16 @@ class Router
             $tgBot->sendMessage($message);
 
         }
+    }
+
+    public function test(Request $request)
+    {
+        $chatId = $request->get('chat_id');
+        $tgUserId = $request->get('tg_user_id');
+        $isExists = UserModel::query()->where('chat_id', $chatId)->where('tg_user_id',
+            $tgUserId)->exists();
+        dd($isExists);
+        return $isExists;
     }
 
 

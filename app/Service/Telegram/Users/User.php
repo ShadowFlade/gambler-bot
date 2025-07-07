@@ -21,7 +21,7 @@ class User
 
         $isUserExists = !empty(
         UserModel::query()
-            ->where('username', $username)
+            ->where('tg_user_id', $tgUserId)
 	        ->where('chat_id', $chatId)
             ->first()
         );
@@ -44,5 +44,11 @@ class User
             $tgBot->sendMessage('Теперь ты лудоман!');
         }
 
+    }
+
+    public static function isExists(string $chatId, string $tgUserId): bool
+    {
+        return UserModel::query()->where('chat_id', $chatId)->where('tg_user_id',
+            $tgUserId)->exists();
     }
 }
