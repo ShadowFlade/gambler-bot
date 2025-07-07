@@ -169,12 +169,10 @@ class Router
 
     public function test(Request $request)
     {
-        $chatId = $request->get('chat_id');
-        $tgUserId = $request->get('tg_user_id');
-        $isExists = UserModel::query()->where('chat_id', $chatId)->where('tg_user_id',
-            $tgUserId)->exists();
-        dd($isExists);
-        return $isExists;
+        $chatId = $request->all()['message']['chat']['id'];
+        $tgBot = new Bot($chatId);
+        $resp = $tgBot->sendTimoshaGif();
+        dd($resp);
     }
 
 

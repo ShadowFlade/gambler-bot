@@ -32,4 +32,14 @@ class Bot
 //		return [];
 		return ['SUCCESS' => $response->ok()];
 	}
+
+    public function sendTimoshaGif()
+    {
+        $response = Http::post("{$this->baseUrl}/sendAnimation", [
+            'chat_id' => $this->chatID,
+            'animation' => "CgACAgIAAyEFAAShTUC7AAICZmhpa0zjQuw1p-Bxn1qFl5fEFT3cAAIpdQACXGXwSqejyWcrvH5ONgQ",
+        ]);
+
+        return $response->json();
+    }
 }
