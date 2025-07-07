@@ -2,6 +2,7 @@
 
 namespace App\Service\Gambling;
 
+use App\Service\Telegram\Users\User;
 use Illuminate\Support\Facades\DB;
 use App\Service\Gambling;
 use Illuminate\Database\Eloquent\Collection;
@@ -14,29 +15,17 @@ class GamblingMessage
     {
         Log::build([
             'driver' => 'daily',
-            'name' => 'info',
-            'path' => storage_path('logs/gambling_message.log'),
+            'name'   => 'info',
+            'path'   => storage_path('logs/gambling_message.log'),
         ])->info(['message' => $message]);
         $message = $this->filterCasinoEmojis($message);
-        Log::build([
-            'driver' => 'daily',
-            'name' => 'info',
-            'path' => storage_path('logs/gambling.log'),
-        ])->info(['message1' => $message]);
+
         if (is_null($message)) {
             return null;
         }
-        Log::build([
-            'driver' => 'daily',
-            'name' => 'info',
-            'path' => storage_path('logs/store_message.log'),
-        ])->info(['1' => $message]);
+
         $this->storeMessage($message);
-        Log::build([
-            'driver' => 'daily',
-            'name' => 'info',
-            'path' => storage_path('logs/store_message.log'),
-        ])->info(['2' => $message]);
+
         return $message;
     }
 
@@ -50,13 +39,19 @@ class GamblingMessage
 
     public function storeMessage(array $message): bool
     {
-	    Log::build([
-		    'driver' => 'daily',
-		    'name' => 'info',
-		    'path' => storage_path('logs/store_message_before.log'),
-	    ])->info(['$message' => $message]);
+        $chatId = $message['chat']['id'];
+        $tgUserId = $message['from']['id'];
+        $isUserExists = User::isExists($chatId, $tgUserId);
+        if (!$isUserExists) {
+            return false;
+        }
+        Log::build([
+            'driver' => 'daily',
+            'name'   => 'info',
+            'path'   => storage_path('logs/store_message_before.log'),
+        ])->info(['$message' => $message]);
         $newMessage = new \App\Models\GamblingMessage();
-        $newMessage->chat_id = $message['chat']['id'];
+        $newMessage->chat_id = $chatId;
         $newMessage->emoji_type = 'casino'; //TODO[placeholder] - determine type of emoji
         $resultDicValues = $message['dice']['value'];
         $newMessage->is_win = $this->isWin($resultDicValues);
@@ -78,12 +73,12 @@ class GamblingMessage
 		else {
             $newMessage->win_price = Enum\WinningPrice::DEFAULT->value;
         }
-	    $isSuccess = $newMessage->saveOrFail();
+        $isSuccess = $newMessage->saveOrFail();
         Log::build([
             'driver' => 'daily',
-            'name' => 'info',
-            'path' => storage_path('logs/store_message.log'),
-        ])->info(['$isSuccess' => $isSuccess,'new id' =>$newMessage->id]);
+            'name'   => 'info',
+            'path'   => storage_path('logs/store_message.log'),
+        ])->info(['$isSuccess' => $isSuccess, 'new id' => $newMessage->id]);
         return $isSuccess;
     }
 
