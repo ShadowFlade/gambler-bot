@@ -60,7 +60,17 @@ class GamblingMessage
 
         if ($resultDicValues == Gambling\Enum\WinningValue::JACKPOT->value) {
             $newMessage->win_price = Enum\WinningPrice::JACKPOT->value;
-        } else {
+        } else if ($resultDicValues ==
+	        Gambling\Enum\WinningValue::CHERRIES->value) {
+	        $newMessage->win_price = Enum\WinningPrice::CHERRIES->value;
+        } else if ($resultDicValues ==
+	        Gambling\Enum\WinningValue::BARS->value) {
+	        $newMessage->win_price = Enum\WinningPrice::BARS->value;
+        } else if ($resultDicValues ==
+	        Gambling\Enum\WinningValue::LEMONS->value) {
+	        $newMessage->win_price = Enum\WinningPrice::LEMONS->value;
+        }
+		else {
             $newMessage->win_price = Enum\WinningPrice::DEFAULT->value;
         }
         $isSuccess = $newMessage->saveOrFail();

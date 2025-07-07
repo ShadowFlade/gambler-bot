@@ -17,22 +17,28 @@ class VerifyTelegramRequest
 
 	public function handle(\Illuminate\Http\Request $request)
 	{
-		TgLogger::log(
-			[
-				$request->ip(),
-				$request->all(),
-				!$this->isTelegramIP($request->ip())
-			],
-			'first_request');
+//		TgLogger::log(
+//			[
+//				$request->ip(),
+//				$request->all(),
+//				!$this->isTelegramIP($request->ip())
+//			],
+//			'first_request'
+//        );
 		if (!$this->isTelegramIP($request->ip())) {
+			TgLogger::log($request,'invalid_origin');
 			abort(403, 'Invalid origin');
 		}
 
 		if ($request->header('X-Telegram-Bot-Api-Secret-Token') !== $this->secret_token) {
+			TgLogger::log($request,'Invalid_token');
 			abort(403, 'Invalid token');
 		}
 
 		if (!$this->isValidTelegramData($request->all())) {
+			TgLogger::log([$request,$this->isValidTelegramData($request->all
+			())],'Invalid_data');
+
 			abort(400, 'Invalid data');
 		}
 
@@ -46,6 +52,10 @@ class VerifyTelegramRequest
 
 	private function isValidTelegramData($data)
 	{
-		return isset($data['update_id']) && isset($data['message']['chat']['id']);
+		return isset($data['update_id'])
+			&& (
+				isset($data['message']['chat']['id'])
+				|| isset($data['edited_message']['chat']['id'])
+			);
 	}
 }

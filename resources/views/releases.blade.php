@@ -200,7 +200,7 @@
             <div class="release-header">
                 <span class="version">v0.1</span>
                 <span class="date">06.07.2025</span>
-                <span class="status.upcoming">Готовится к релизу</span>
+                <span class="status.released">Опубликован</span>
             </div>
             <h2 class="release-title">Основной функционал (первый релиз)</h2>
             <p class="release-description">
@@ -215,6 +215,37 @@
                 </li>
                 <li>
                     <span class="feature-type new">Статистика по количеству выигранных денег</span>
+                </li>
+            </ul>
+        </section>
+
+        <section class="release">
+            <div class="release-header">
+                <span class="version">v0.1.1</span>
+                <span class="date">07.07.2025</span>
+                <span class="status.released">Опубликован</span>
+            </div>
+            <h2 class="release-title">Патч первого дня по запросам пользователей</h2>
+            <p class="release-description">
+                PATCH
+            </p>
+            <ul class="features">
+                <li>
+                    <span class="feature-type new">Исправлен вывод статистики (команда <code>/statistics</code>)</span>
+                    <p>Более компактный вид + добавлен баланс</p>
+                    <div>
+                        Было:
+                        <div>
+                            <img src="{{asset('/img/1.jpg')}}" alt="">
+                        </div>
+                    </div>
+                    <div>
+                        Стало:
+                        <div>
+                            <img src="{{asset('/img/2.jpg')}}" alt="">
+                        </div>
+                    </div>
+
                 </li>
             </ul>
         </section>
