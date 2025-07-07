@@ -17,13 +17,14 @@ class VerifyTelegramRequest
 
 	public function handle(\Illuminate\Http\Request $request)
 	{
-		TgLogger::log(
-			[
-				$request->ip(),
-				$request->all(),
-				!$this->isTelegramIP($request->ip())
-			],
-			'first_request');
+//		TgLogger::log(
+//			[
+//				$request->ip(),
+//				$request->all(),
+//				!$this->isTelegramIP($request->ip())
+//			],
+//			'first_request'
+//        );
 		if (!$this->isTelegramIP($request->ip())) {
 			TgLogger::log($request,'invalid_origin');
 			abort(403, 'Invalid origin');
