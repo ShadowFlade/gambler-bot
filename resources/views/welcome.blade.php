@@ -1894,7 +1894,7 @@
 
         <div class="stats">
             <div class="stat">
-                <div class="stat-number">дохуя</div>
+                <div class="stat-number">{{$total_active_users}}</div>
                 <div class="stat-label">Активных пользователей</div>
             </div>
             <div class="stat">

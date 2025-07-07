@@ -51,4 +51,10 @@ class User
         return UserModel::query()->where('chat_id', $chatId)->where('tg_user_id',
             $tgUserId)->exists();
     }
+
+	public static function getTotalUniqueUsers()
+	{
+		return UserModel::query()->select('tg_user_id','id')->distinct('tg_user_id')
+			->count();
+	}
 }
