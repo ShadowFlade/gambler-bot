@@ -2,6 +2,7 @@
 
 namespace App\Service\Gambling;
 
+use App\Service\Telegram\Bot;
 use App\Service\Telegram\Users\User;
 use Illuminate\Support\Facades\DB;
 use App\Service\Gambling;
@@ -60,6 +61,8 @@ class GamblingMessage
 
         if ($resultDicValues == Gambling\Enum\WinningValue::JACKPOT->value) {
             $newMessage->win_price = Enum\WinningPrice::JACKPOT->value;
+            $tgBot = new Bot($chatId);
+            $tgBot->sendTimoshaGif();
         } else if ($resultDicValues ==
 	        Gambling\Enum\WinningValue::CHERRIES->value) {
 	        $newMessage->win_price = Enum\WinningPrice::CHERRIES->value;
