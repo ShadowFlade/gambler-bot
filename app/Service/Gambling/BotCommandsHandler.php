@@ -1,0 +1,67 @@
+<?php
+
+namespace App\Service\Gambling;
+
+use App\Service\Log\TgLogger;
+use App\Service\Telegram\Bot;
+use App\Service\Telegram\Enum\BotCommands;
+
+class BotCommandsHandler
+{
+    public function __construct(private string $chatID) { }
+
+    public function register(array $message): void
+    {
+        $username = $message['from']['username'] ?? null;
+        $lastName = $message['from']['last_name'] ?? null;
+
+        $name = $message['from']['first_name'];
+        if (!is_null($lastName)) {
+            $name .= ' ' . $message['from']['last_name'];
+        }
+        if (is_null($username)) {
+            $username = $name;
+        }
+        $tgUserId = $message['from']['id'];
+        \App\Service\Telegram\Users\User::register($username, $this->chatID,
+            $name, $tgUserId);
+        TgLogger::log(
+            [$username, $this->chatID, $name],
+            'handle_bot_commands'
+        );
+    }
+
+    public function statistics(array $message): void
+    {
+        $stats = new \App\Service\Gambling\Statistics($this->chatID);
+        $mostWinsByCounts = $stats->getMostWinsByCount();
+        $mostWinsByMoney = $stats->getMostWinsByMoney();
+        $mostWinsByMoneyArr = $mostWinsByMoney->keyBy('user_id')
+            ->toArray();
+
+        $tgBot = new Bot($this->chatID);
+        $message = "Статистика:\n";
+        TgLogger::log([$mostWinsByCounts], "win_by_count_debug");
+        if (is_null($mostWinsByCounts)) {
+            return;
+        }
+        foreach ($mostWinsByCounts->win_percent as $userID
+        => $winPercentItem) {
+            $balance = -$winPercentItem->spentOnSpins +
+                $mostWinsByMoneyArr[$userID]['win_sum'];
+            $message .= $winPercentItem->name . ": " .
+                $balance . '$ ( ' .
+                $mostWinsByCounts->win_count[$userID]->userWinCount . '/'
+                . $mostWinsByCounts->win_percent[$userID]->totalCount . ' ' .
+                round($winPercentItem->userWinPercent, 4) . '%)' .
+                "\n";
+
+        }
+
+        if (is_null($mostWinsByCounts)) {
+            return;
+        }
+
+        $tgBot->sendMessage($message);
+    }
+}
