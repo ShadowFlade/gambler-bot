@@ -58,6 +58,9 @@ class GamblingMessage
         $newMessage->is_win = $this->isWin($resultDicValues);
         $newMessage->win_value = $resultDicValues;
         $newMessage->user_id = $message['from']['id'];
+	    if (isset($message['forward_origin']) || isset($message['forward_from'])) {
+		    return false;
+	    }
 
         if ($resultDicValues == Gambling\Enum\WinningValue::JACKPOT->value) {
             $newMessage->win_price = Enum\WinningPrice::JACKPOT->value;
