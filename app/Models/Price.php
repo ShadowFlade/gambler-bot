@@ -15,5 +15,5 @@ use Illuminate\Database\Eloquent\Model;
  **/
 class Price extends Model
 {
-    protected $fillable = ['type','sub_type','price'];
+    protected $fillable = ['type', 'sub_type', 'price', 'chat_id'];
 }

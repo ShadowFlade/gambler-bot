@@ -16,7 +16,8 @@ return new class extends Migration
             $table->timestamps();
             $table->integer('price');
             $table->string('type');
-            $table->string('sub_type');
+            $table->string('sub_type')->nullable();
+            $table->string('chat_id');
         });
     }
 

@@ -44,7 +44,7 @@ class Bot
 
     public function sendSticker(string $fileID)
     {
-        $response = Http::post("{$this->baseUrl}/sendAnimation", [
+        $response = Http::post("{$this->baseUrl}/sendSticker", [
             'chat_id'   => $this->chatID,
             'sticker' => $fileID,
         ]);

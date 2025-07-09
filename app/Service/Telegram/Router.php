@@ -3,6 +3,7 @@
 namespace App\Service\Telegram;
 
 use App\Models\User as UserModel;
+use App\Service\Gambling\AdminBotCommandsHandler;
 use App\Service\Gambling\BotCommandsHandler;
 use App\Service\Gambling\Enum\Emoji;
 use App\Service\Log\RequestLogger;
@@ -57,10 +58,9 @@ class Router
             );
             $gamblingMessage = new GamblingMessage();
             $resp = $gamblingMessage->handleMessage($message);
-        } else if ($messageType == MessageType::ADMIN_BOT_COMMAND) {
-
         } else if ($messageType ==
-            MessageType::BOT_COMMAND) {
+            MessageType::BOT_COMMAND || $messageType ==
+            MessageType::ADMIN_BOT_COMMAND) {
             $command = $this->getBotCommand($message);
             $this->handleBotCommands($command, $message);
         }
@@ -129,7 +129,7 @@ class Router
         return $message['chat']['type'] === 'private';
     }
 
-    private function handleBotCommands(string $command, array $message)
+    private function handleBotCommands(string $command, array $message): void
     {
         TgLogger::log(['command' => $command, 'message' => $message], 'handle_bot_commands');
 
@@ -141,15 +141,32 @@ class Router
         } elseif ($command ==
             \App\Service\Telegram\Enum\BotCommands::STATISTICS->value) {
             $botCommandsHandler->statistics($message);
+        } elseif ($command ==
+            \App\Service\Telegram\Enum\AdminBotCommands::SET_SPIN_PRICE) {
+            $adminBotCommandHandler = new AdminBotCommandsHandler($chatID);
+            $arguments = $this->getBotCommandArguments($message['text'],
+                $command);
+            $adminBotCommandHandler->setSpinPrice($arguments[0]);
+        }
+    }
+
+    private function getBotCommandArguments(string $text, string $command): array
+    {
+        $text = str_replace("/$command", '', $text);
+        $args = explode(' ', $text)[1];
+        if (str_contains($args, ' ')) {
+            $args = explode(' ', $args);
+            return $args;
+        } else {
+            return [$args];
         }
     }
 
     public function test(Request $request)
     {
         $chatId = $request->all()['message']['chat']['id'];
-        $tgBot = new Bot($chatId);
-        $resp = $tgBot->sendTimoshaGif();
-        dd($resp);
+        $hdl = new \App\Service\Gambling\AdminBotCommandsHandler($chatId);
+        $hdl->setSpinPrice(10);
     }
 
 
