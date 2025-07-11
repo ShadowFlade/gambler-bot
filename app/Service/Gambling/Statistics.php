@@ -114,4 +114,22 @@ class Statistics
 
         return $topWinners;
     }
+
+    public function getGamblerOfDay(): ?object
+    {
+        $today = now()->startOfDay();
+        
+        return \App\Models\GamblingMessage::with(['user' => function ($query) {
+            $query->select('tg_user_id', 'name');
+        }])
+        ->select([
+            'user_id',
+            DB::raw('COUNT(*) as gamble_count')
+        ])
+        ->where('chat_id', '=', $this->chatID)
+        ->whereDate('created_at', $today)
+        ->groupBy('user_id')
+        ->orderByDesc('gamble_count')
+        ->first();
+    }
 }
