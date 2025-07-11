@@ -48,20 +48,19 @@ class Router
                     'ERROR'   => \App\Service\Telegram\Enum\Error::NO_PRIVATE_CHAT
                 ]
             );
-        } else if ($messageType == MessageType::GAMBLING_MESSAGE) {
+        }
+
+        if ($messageType == MessageType::COMMAND) {
+            return $this->handleCommand($message);
+        }
+
+        if ($messageType == MessageType::GAMBLING_MESSAGE) {
             TgLogger::log(
                 [$messageType, $messageType == MessageType::GAMBLING_MESSAGE],
                 'am_i_herer'
             );
             $gamblingMessage = new GamblingMessage();
             $resp = $gamblingMessage->handleMessage($message);
-        } else if ($messageType ==
-            MessageType::BOT_COMMAND) {
-            if (str_contains($message['text'], '@')) {
-                $message['text'] = explode("@", $message['text'])[0];
-            }
-            $command = str_replace('/', '', $message['text']);
-            $this->handleBotCommands($command, $message);
         }
 
         $response = new Response($resp, 200);
@@ -131,8 +130,20 @@ class Router
                 'handle_bot_commands'
             );
 
-        } elseif ($command ==
-            \App\Service\Telegram\Enum\BotCommands::STATISTICS->value) {
+        } elseif ($command == \App\Service\Telegram\Enum\BotCommands::GAMBLER_OF_DAY->value) {
+            $stats = new \App\Service\Gambling\Statistics($chatID);
+            $gamblerOfDay = $stats->getGamblerOfDay();
+            
+            $tgBot = new Bot($chatID);
+            if (is_null($gamblerOfDay)) {
+                $tgBot->sendMessage('Сегодня еще никто не лудоманил 😢');
+                return;
+            }
+
+            $name = $gamblerOfDay->user->name;
+            $count = $gamblerOfDay->gamble_count;
+            $tgBot->sendMessage("🎰 Лудик дня: $name 🎰\nКоличество ставок: $count");
+        } elseif ($command == \App\Service\Telegram\Enum\BotCommands::STATISTICS->value) {
             $stats = new \App\Service\Gambling\Statistics($chatID);
             $mostWinsByCounts = $stats->getMostWinsByCount();
             $mostWinsByMoney = $stats->getMostWinsByMoney();
