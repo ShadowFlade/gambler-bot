@@ -56,6 +56,7 @@ class VerifyTelegramRequest
 			&& (
 				isset($data['message']['chat']['id'])
 				|| isset($data['edited_message']['chat']['id'])
+                || isset($data['callback_query'])
 			);
 	}
 }

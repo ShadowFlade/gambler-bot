@@ -9,10 +9,12 @@ use App\Service\Gambling\Enum\Emoji;
 use App\Service\Log\RequestLogger;
 use App\Service\Log\TgLogger;
 use App\Service\Telegram\Enum\AdminBotCommands;
+use App\Service\Telegram\Enum\BotCommands;
 use Illuminate\Http\Request;
 use App\Service\Gambling\GamblingMessage;
 use App\Service\Telegram\Enum\MessageType;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class Router
@@ -23,11 +25,30 @@ class Router
 
         RequestLogger::log($request);
         $message = $data['message'] ?? $data['edited_message'] ?? null;
-        if (is_null($message)) {
-            TgLogger::log($request, 'no_message_data');
+        if (isset($message['reply_to_message'])) {
+            $repliesHandler = new RepliesHandler($message['chat']['id']);
+            $repliesHandler->handle($message);
+        } else if (!is_null($message)) {
+            $this->handleIncomingTgMessage($message);
+            return;
+        } else if (isset($data['callback_query'])) {
+            $callbackHandler = new CallbackQueryHandler(
+                $data['callback_query']['message']['chat']['id'],
+                $data['callback_query']
+            );
+            $callbackHandler->handle();
             return;
         }
-        $this->handleIncomingTgMessage($message);
+    }
+
+    private function handleCallbackQuery(array $callbackQuery)
+    {
+        $command = $callbackQuery['data'];
+        $userID = $callbackQuery['from']['id'];
+        $chatID = $callbackQuery['message']['chat']['id'];
+        $adminBotCommandHandler = new AdminBotCommandsHandler($chatID);
+        $newSpinPrice = $this->getBotCommandArguments();
+//        $adminBotCommandHandler->setSpinPrice();
     }
 
 
@@ -116,6 +137,7 @@ class Router
         if (in_array($command, AdminBotCommands::cases())) {
             return true;
         }
+        return false;
     }
 
     private function isGamblingMessage(array $message): bool
@@ -135,14 +157,14 @@ class Router
 
         $chatID = $message['chat']['id'];
         $botCommandsHandler = new BotCommandsHandler($chatID);
-        if ($command == \App\Service\Telegram\Enum\BotCommands::REGISTER
-                ->value) {
+        if ($command == BotCommands::REGISTER->value) {
             $botCommandsHandler->register($message);
-        } elseif ($command ==
-            \App\Service\Telegram\Enum\BotCommands::STATISTICS->value) {
+        } elseif ($command == BotCommands::STATISTICS->value) {
             $botCommandsHandler->statistics($message);
-        } elseif ($command ==
-            \App\Service\Telegram\Enum\AdminBotCommands::SET_SPIN_PRICE) {
+        } else if ($command == BotCommands::ADMIN_COMMANDS->value) {
+            $botCommandsHandler->adminCommands();
+            return;
+        } elseif ($command == AdminBotCommands::SET_SPIN_PRICE) {
             $adminBotCommandHandler = new AdminBotCommandsHandler($chatID);
             $arguments = $this->getBotCommandArguments($message['text'],
                 $command);
@@ -164,9 +186,10 @@ class Router
 
     public function test(Request $request)
     {
-        $chatId = $request->all()['message']['chat']['id'];
-        $hdl = new \App\Service\Gambling\AdminBotCommandsHandler($chatId);
-        $hdl->setSpinPrice(10);
+        $adminHandler = new BotCommandsHandler($request->all()
+                                               ['message']['chat']['id']);
+        $adminHandler->adminCommands();
+
     }
 
 

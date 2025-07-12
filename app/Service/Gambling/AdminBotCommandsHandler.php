@@ -17,7 +17,6 @@ class AdminBotCommandsHandler
 
     public function setSpinPrice(int $newSpinPrice): void
     {
-
         $queryRes = Price::query()
             ->where('type', '=', 'spin')
             ->where('chat_id', '=', $this->chatID)

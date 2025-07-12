@@ -4,6 +4,7 @@ namespace App\Service\Gambling;
 
 use App\Service\Log\TgLogger;
 use App\Service\Telegram\Bot;
+use App\Service\Telegram\Enum\AdminBotCommands;
 use App\Service\Telegram\Enum\BotCommands;
 
 class BotCommandsHandler
@@ -63,5 +64,27 @@ class BotCommandsHandler
         }
 
         $tgBot->sendMessage($message);
+    }
+
+    public function adminCommands(): void
+    {
+        $keyboard = [
+            'inline_keyboard' => [
+                [
+                    [
+                        'text' => 'Введи цену спина ($)',
+                        'callback_data' => 'set_spin_price'
+                    ]
+                ]
+            ]
+        ];
+        $data = [
+            'text' => 'Админские команды:',
+            'reply_markup' => json_encode($keyboard),
+        ];
+        $tgBot = new Bot($this->chatID);
+        $resp = $tgBot->sendRawMessage($data);
+
+        TgLogger::log($resp,'admin_commands');
     }
 }
