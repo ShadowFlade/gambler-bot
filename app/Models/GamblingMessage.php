@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $id
  * @property int $chat_id
  * @property int $tg_user_id
+ * @property int $spin_price
  * @property string $emoji_type
  * @property string $win_value
  * @property string $win_price
@@ -26,7 +27,8 @@ class GamblingMessage extends Model
         'is_win',
         'win_value',
         'user_id',
-        'win_price'
+        'win_price',
+        'spin_price'
     ];
     public function user(): HasOne
     {

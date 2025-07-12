@@ -2,6 +2,8 @@
 
 namespace App\Service\Gambling;
 
+use App\Models\Price;
+use App\Service\Log\TgLogger;
 use App\Service\Telegram\Bot;
 use App\Service\Telegram\Users\User;
 use Illuminate\Support\Facades\DB;
@@ -44,6 +46,7 @@ class GamblingMessage
         $tgUserId = $message['from']['id'];
         $isUserExists = User::isExists($chatId, $tgUserId);
         if (!$isUserExists) {
+            TgLogger::log("User $tgUserId not found",'users');
             return false;
         }
         Log::build([
@@ -58,6 +61,10 @@ class GamblingMessage
         $newMessage->is_win = $this->isWin($resultDicValues);
         $newMessage->win_value = $resultDicValues;
         $newMessage->user_id = $message['from']['id'];
+        $stats = new Statistics($chatId);
+        $price = $stats->getSpinPrice(null);
+        $newMessage->spin_price = $price;
+
 	    if (isset($message['forward_origin']) || isset($message['forward_from'])) {
 		    return false;
 	    }
