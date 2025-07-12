@@ -29,7 +29,8 @@ class Router
         RequestLogger::log($request);
         $message = $data['message'] ?? $data['edited_message'] ?? null;
         if (isset($message['reply_to_message'])) {
-            $repliesHandler = new RepliesHandler($message['chat']['id']);
+            $repliesHandler = new RepliesHandler($message['chat']['id'],
+	            $message['from']['id']);
             $repliesHandler->handle($message);
         } else if (!is_null($message)) {
             $this->handleIncomingTgMessage($message);
@@ -37,7 +38,8 @@ class Router
         } else if (isset($data['callback_query'])) {
             $callbackHandler = new CallbackQueryHandler(
                 $data['callback_query']['message']['chat']['id'],
-                $data['callback_query']
+                $data['callback_query'],
+	            $data['callback_query']['from']['id']
             );
             $callbackHandler->handle();
             return;
