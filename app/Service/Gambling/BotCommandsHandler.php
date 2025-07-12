@@ -6,6 +6,7 @@ use App\Service\Log\TgLogger;
 use App\Service\Telegram\Bot;
 use App\Service\Telegram\Enum\AdminBotCommands;
 use App\Service\Telegram\Enum\BotCommands;
+use App\Service\Telegram\Users\Roles;
 
 class BotCommandsHandler
 {
@@ -24,8 +25,13 @@ class BotCommandsHandler
             $username = $name;
         }
         $tgUserId = $message['from']['id'];
-        \App\Service\Telegram\Users\User::register($username, $this->chatID,
-            $name, $tgUserId);
+        \App\Service\Telegram\Users\User::register(
+            $username,
+            $this->chatID,
+            $name,
+            $tgUserId,
+            Roles::LUDIK->value,
+        );
         TgLogger::log(
             [$username, $this->chatID, $name],
             'handle_bot_commands'
@@ -37,6 +43,7 @@ class BotCommandsHandler
         $stats = new \App\Service\Gambling\Statistics($this->chatID);
         $mostWinsByCounts = $stats->getMostWinsByCount();
         $mostWinsByMoney = $stats->getMostWinsByMoney();
+
         $mostWinsByMoneyArr = $mostWinsByMoney->keyBy('user_id')
             ->toArray();
 
@@ -72,19 +79,19 @@ class BotCommandsHandler
             'inline_keyboard' => [
                 [
                     [
-                        'text' => 'Введи цену спина ($)',
+                        'text'          => 'Введи цену спина ($)',
                         'callback_data' => 'set_spin_price'
                     ]
                 ]
             ]
         ];
         $data = [
-            'text' => 'Админские команды:',
+            'text'         => 'Админские команды:',
             'reply_markup' => json_encode($keyboard),
         ];
         $tgBot = new Bot($this->chatID);
         $resp = $tgBot->sendRawMessage($data);
 
-        TgLogger::log($resp,'admin_commands');
+        TgLogger::log($resp, 'admin_commands');
     }
 }

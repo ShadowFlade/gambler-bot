@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('prices', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->integer('price');
+            $table->integer('price')->default(1);
             $table->string('type');
             $table->string('sub_type')->nullable();
             $table->string('chat_id');
+            $table->dateTime('active_until');
         });
     }
 

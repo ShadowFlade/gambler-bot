@@ -2,6 +2,7 @@
 
 namespace App\Service\Gambling;
 
+use App\Models\Price;
 use App\Models\User;
 use App\Service\Log\TgLogger;
 use App\Service\Telegram\Bot;
@@ -10,17 +11,22 @@ use Illuminate\Support\Facades\DB;
 
 class Statistics
 {
-    private int $spinPrice = 1;
-    public function __construct(private string $chatID) { }
+
+    public function __construct(private string $chatID)
+    {
+    }
 
     public function getMostWinsByCount(): object|null
     {
+        $tgBot = new Bot($this->chatID);
+
         $baseQuery = \App\Models\GamblingMessage::with(['user' => function ($query) {
-            $query->select('tg_user_id', 'name');
+            $query->select('tg_user_id', 'name', );
         }])->select(
             [
                 'user_id',
-                DB::raw('COUNT(*) as total_count')
+                DB::raw('COUNT(*) as total_count'),
+                DB::raw('SUM(spin_price) as spin_sum'),
             ]
         )
             ->where('chat_id', '=', $this->chatID)
@@ -29,7 +35,7 @@ class Statistics
         $topWinners = (clone $baseQuery)
             ->where('is_win', true)
             ->addSelect(DB::raw('SUM(CASE WHEN is_win = 1 THEN 1 ELSE 0 END) as win_count'))
-			->orderByDesc('win_count')
+            ->orderByDesc('win_count')
             ->get()
             ->keyBy('user_id');
 
@@ -40,18 +46,17 @@ class Statistics
             'win_percent' => [],
             'win_count'   => []
         ];
-	    TgLogger::log(
-			[
-				$topWinners->toArray(),
-				$topWinners->isEmpty(),
-				$topWinners->count()
-			],
-		    "top_winners_debug"
-	    );
+        TgLogger::log(
+            [
+                $topWinners->toArray(),
+                $topWinners->isEmpty(),
+                $topWinners->count()
+            ],
+            "top_winners_debug"
+        );
 
-	    if ($topWinners->isEmpty()) {
+        if ($topWinners->isEmpty()) {
             $message = "Никто из вас неудачников ничего и никогда не выигрывал в своей жизни. Идите умойтесь.";
-            $tgBot = new Bot($this->chatID);
             $tgBot->sendMessage($message);
             return null;
         }
@@ -59,11 +64,12 @@ class Statistics
 
             $totalUserSpinsCount =
                 $totalUsersTriesCount[$topWinner->user_id]['total_count'];
+            $userSpinSUm = $totalUsersTriesCount[$topWinner->user_id]['spin_sum'];
             $userPercentStats = (object)[
                 'name'           => $topWinner->user->name,
                 'userWinPercent' => 0,
-                'spentOnSpins' => $totalUserSpinsCount * $this->spinPrice,
-                'totalCount' => $totalUserSpinsCount,
+                'spentOnSpins'   => $userSpinSUm,
+                'totalCount'     => $totalUserSpinsCount,
 
             ];
             $userCountStats = (object)[
@@ -94,7 +100,7 @@ class Statistics
     public function getMostWinsByMoney(): Collection
     {
         $topWinners = \App\Models\GamblingMessage::with(['user' => function ($query) {
-            $query->select('name','tg_user_id');//тут нужно добавить
+            $query->select('name', 'tg_user_id');//тут нужно добавить
             // tg_user_id чтобы он по связи его нашел. можно ли в модели (в
             // юзер модели или в гэмблинг модели сделать чтобы он это сам
             // делал?)
@@ -114,4 +120,24 @@ class Statistics
 
         return $topWinners;
     }
+
+    public function getSpinPrice(?Bot $tgBot): int
+    {
+        $price = Price::query()
+            ->where('chat_id', '=', $this->chatID)
+            ->where('type', '=', 'spin')
+            ->where('active_until', '>', now())
+            ->select('price')
+            ->orderByDesc('id')
+            ->limit(1)
+            ->first();
+
+        if (empty($price) || empty($price->price) && !empty($tgBot)) {
+            $tgBot->sendMessage('Ставки сделаны, ставок больше нет (как и цен)');
+        }
+
+        return $price->price;
+    }
+
+
 }

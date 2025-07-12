@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Service\Telegram\Users\Roles;
 use Illuminate\Http\Request;
 
 class User extends Controller
@@ -30,11 +31,14 @@ class User extends Controller
         $chatId = $request['message']['chat']['id'];
         $username = $request['message']['from']['username'];
         $name = $request['message']['from']['first_name'] . ' ' . $request['message']['from']['last_name'];
+        $role = Roles::LUDIK->value;
         $tgUserId = $request['message']['from']['id'];
-        $user = \App\Service\Gambling\User\User::register(
+        \App\Service\Telegram\Users\User::register(
             $username,
             $chatId,
-            $name
+            $name,
+            $tgUserId,
+            $role
         );
     }
 

@@ -2,14 +2,17 @@
 
 namespace App\Service\Telegram;
 
+use App\Models\Price;
 use App\Models\User as UserModel;
 use App\Service\Gambling\AdminBotCommandsHandler;
 use App\Service\Gambling\BotCommandsHandler;
 use App\Service\Gambling\Enum\Emoji;
+use App\Service\Gambling\Statistics;
 use App\Service\Log\RequestLogger;
 use App\Service\Log\TgLogger;
 use App\Service\Telegram\Enum\AdminBotCommands;
 use App\Service\Telegram\Enum\BotCommands;
+use App\Service\Telegram\Users\User;
 use Illuminate\Http\Request;
 use App\Service\Gambling\GamblingMessage;
 use App\Service\Telegram\Enum\MessageType;
@@ -73,10 +76,6 @@ class Router
                 ]
             );
         } else if ($messageType == MessageType::GAMBLING_MESSAGE) {
-            TgLogger::log(
-                [$messageType, $messageType == MessageType::GAMBLING_MESSAGE],
-                'am_i_herer'
-            );
             $gamblingMessage = new GamblingMessage();
             $resp = $gamblingMessage->handleMessage($message);
         } else if ($messageType ==
@@ -93,9 +92,11 @@ class Router
 
     private function determineTypeOfMessage(array $message): MessageType
     {
-        TgLogger::log($message, 'type_of_mesage');
         $isBotCommand = $this->isBotCommand($message);
-        $command = $this->getBotCommand($message);
+
+        if ($isBotCommand) {
+            $command = $this->getBotCommand($message);
+        }
 
         if ($isBotCommand && $this->isAdminBotCommand($command)) {
             return MessageType::ADMIN_BOT_COMMAND;
@@ -161,10 +162,14 @@ class Router
             $botCommandsHandler->register($message);
         } elseif ($command == BotCommands::STATISTICS->value) {
             $botCommandsHandler->statistics($message);
-        } else if ($command == BotCommands::ADMIN_COMMANDS->value) {
+        } else if ($command == BotCommands::ADMIN_COMMANDS->value &&
+            User::isChatAdmin($chatID, $message['from']['id'])) {
             $botCommandsHandler->adminCommands();
             return;
-        } elseif ($command == AdminBotCommands::SET_SPIN_PRICE) {
+        } elseif (
+            $command == AdminBotCommands::SET_SPIN_PRICE
+            && User::isChatAdmin($chatID, $message['from']['id'])
+        ) {
             $adminBotCommandHandler = new AdminBotCommandsHandler($chatID);
             $arguments = $this->getBotCommandArguments($message['text'],
                 $command);
@@ -186,9 +191,14 @@ class Router
 
     public function test(Request $request)
     {
-        $adminHandler = new BotCommandsHandler($request->all()
-                                               ['message']['chat']['id']);
-        $adminHandler->adminCommands();
+        $price = Price::query()
+            ->where('chat_id', '=', -1002522114265)
+            ->where('type', '=', 'spin')
+            ->where('active_until', '>', now())
+            ->select('price')
+            ->orderByDesc('id')
+            ->limit(1)
+            ->first();
 
     }
 
