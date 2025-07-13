@@ -13,6 +13,7 @@ class RepliesHandler
 	public function handle(array $message)
 	{
 		if (
+			isset($message['reply_to_message']['text']) && 
 			$message['reply_to_message']['text'] == BotReplies::getSetPriceForSpinText()
 		) {
 			$this->setSpinPrice($message['text']);

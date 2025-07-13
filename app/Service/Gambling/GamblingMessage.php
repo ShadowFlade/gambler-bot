@@ -70,18 +70,20 @@ class GamblingMessage
 	    }
 
         if ($resultDicValues == Gambling\Enum\WinningValue::JACKPOT->value) {
-            $newMessage->win_price = Enum\WinningPrice::JACKPOT->value;
+//            $newMessage->win_price = Enum\WinningPrice::JACKPOT->value;
+	        $newMessage->win_price = $price * 80;
+
             $tgBot = new Bot($chatId);
             $tgBot->sendTimoshaGif();
         } else if ($resultDicValues ==
 	        Gambling\Enum\WinningValue::CHERRIES->value) {
-	        $newMessage->win_price = Enum\WinningPrice::CHERRIES->value;
+	        $newMessage->win_price = $price * 10;
         } else if ($resultDicValues ==
 	        Gambling\Enum\WinningValue::BARS->value) {
-	        $newMessage->win_price = Enum\WinningPrice::BARS->value;
+	        $newMessage->win_price = $price * 20;
         } else if ($resultDicValues ==
 	        Gambling\Enum\WinningValue::LEMONS->value) {
-	        $newMessage->win_price = Enum\WinningPrice::LEMONS->value;
+	        $newMessage->win_price = $price * 5;
         }
 		else {
             $newMessage->win_price = Enum\WinningPrice::DEFAULT->value;
