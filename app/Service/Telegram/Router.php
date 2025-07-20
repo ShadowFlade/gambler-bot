@@ -176,6 +176,10 @@ class Router
             $arguments = $this->getBotCommandArguments($message['text'],
                 $command);
             $adminBotCommandHandler->setSpinPrice($arguments[0]);
+	        TgLogger::log(
+		        ['message' => $message, 'arguments' => $arguments],
+		        '1'
+	        );
         }
     }
 

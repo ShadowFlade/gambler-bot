@@ -71,7 +71,7 @@ class GamblingMessage
 
         if ($resultDicValues == Gambling\Enum\WinningValue::JACKPOT->value) {
 //            $newMessage->win_price = Enum\WinningPrice::JACKPOT->value;
-	        $newMessage->win_price = $price * 80;
+	        $newMessage->win_price = $price * 40;
 
             $tgBot = new Bot($chatId);
             $tgBot->sendTimoshaGif();
@@ -80,10 +80,10 @@ class GamblingMessage
 	        $newMessage->win_price = $price * 10;
         } else if ($resultDicValues ==
 	        Gambling\Enum\WinningValue::BARS->value) {
-	        $newMessage->win_price = $price * 20;
+	        $newMessage->win_price = $price * 15;
         } else if ($resultDicValues ==
 	        Gambling\Enum\WinningValue::LEMONS->value) {
-	        $newMessage->win_price = $price * 5;
+	        $newMessage->win_price = $price * 7;
         }
 		else {
             $newMessage->win_price = Enum\WinningPrice::DEFAULT->value;
