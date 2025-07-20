@@ -8,7 +8,7 @@ use App\Service\Log\TgLogger;
 use App\Service\ProjectGlobal;
 use App\Service\Telegram\Bot;
 use App\Service\Telegram\BotMessages\System;
-use App\Service\Telegram\Enum\BotCommands;
+use App\Service\Telegram\Enum\BotCommand;
 use App\Service\Telegram\Enum\Stickers\WomanEmotions;
 
 class AdminBotCommandsHandler

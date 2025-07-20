@@ -4,8 +4,8 @@ namespace App\Service\Gambling;
 
 use App\Service\Log\TgLogger;
 use App\Service\Telegram\Bot;
-use App\Service\Telegram\Enum\AdminBotCommands;
-use App\Service\Telegram\Enum\BotCommands;
+use App\Service\Telegram\Enum\AdminBotCommand;
+use App\Service\Telegram\Enum\BotCommand;
 use App\Service\Telegram\Users\Roles;
 
 class BotCommandsHandler

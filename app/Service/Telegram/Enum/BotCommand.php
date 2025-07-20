@@ -1,6 +1,6 @@
 <?php
 namespace App\Service\Telegram\Enum;
-enum BotCommands: string
+enum BotCommand: string
 {
 	case REGISTER = 'register';
 	case STATISTICS = 'statistics';

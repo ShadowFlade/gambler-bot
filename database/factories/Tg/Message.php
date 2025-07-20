@@ -1,6 +1,8 @@
 <?php
+
 namespace Database\Factories\Tg;
-class Message {
+class Message
+{
     /**
      * Возвращаемые тут поля по идее всегда будут приходить
      * @param string $chatId
@@ -8,6 +10,7 @@ class Message {
      */
 
     private array $message;
+
     public function createMessageSchema(
         string $chatId,
     )
@@ -22,6 +25,7 @@ class Message {
             'date'       => time(),
         ];
     }
+
     public function get()
     {
         return [

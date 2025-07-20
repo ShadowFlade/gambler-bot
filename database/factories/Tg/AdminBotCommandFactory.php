@@ -2,10 +2,10 @@
 
 namespace Database\Factories\Tg;
 
+use App\Service\Telegram\Enum\AdminBotCommand;
 use App\Service\Telegram\Enum\BotCommand;
 
-class BotCommandFactory extends Message implements
-    \Database\Factories\Tg\Contract\Message
+class AdminBotCommandFactory
 {
     public function __construct(int $chatId, int $fromId)
     {
@@ -14,17 +14,15 @@ class BotCommandFactory extends Message implements
         $this->message = $message;
     }
 
-
     public function createMessage($command)
     {
-        if (!$command instanceof BotCommand) {
-            throw new \Error('Expected BotCommand instance');
+        if (!$command instanceof AdminBotCommand) {
+            throw new \Error('Expected AdminBotCommand instance');
         }
         $this->insertBotCommand($command);
     }
 
-
-    public function insertBotCommand(BotCommand $command)
+    public function insertBotCommand(AdminBotCommand $command)
     {
         $this->message['entities'] = [
             [
@@ -35,11 +33,5 @@ class BotCommandFactory extends Message implements
         ];
         $this->message['text'] = $command->value;
     }
-
-    public function getMessage(): array
-    {
-        return ['message' => $this->message];
-    }
-
 
 }

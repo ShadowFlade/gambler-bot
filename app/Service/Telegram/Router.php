@@ -10,8 +10,8 @@ use App\Service\Gambling\Enum\Emoji;
 use App\Service\Gambling\Statistics;
 use App\Service\Log\RequestLogger;
 use App\Service\Log\TgLogger;
-use App\Service\Telegram\Enum\AdminBotCommands;
-use App\Service\Telegram\Enum\BotCommands;
+use App\Service\Telegram\Enum\AdminBotCommand;
+use App\Service\Telegram\Enum\BotCommand;
 use App\Service\Telegram\Users\User;
 use Illuminate\Http\Request;
 use App\Service\Gambling\GamblingMessage;
@@ -152,7 +152,7 @@ class Router
 
     private function isAdminBotCommand(string $command): bool
     {
-        if (in_array($command, AdminBotCommands::cases())) {
+        if (in_array($command, AdminBotCommand::cases())) {
             return true;
         }
         return false;
@@ -176,16 +176,16 @@ class Router
         $chatID = $message['chat']['id'];
         $botCommandsHandler = new BotCommandsHandler($chatID);
 
-        if ($command == BotCommands::REGISTER->value) {
+        if ($command == BotCommand::REGISTER->value) {
             $botCommandsHandler->register($message);
-        } elseif ($command == BotCommands::STATISTICS->value) {
+        } elseif ($command == BotCommand::STATISTICS->value) {
             $botCommandsHandler->statistics($message);
-        } else if ($command == BotCommands::ADMIN_COMMANDS->value &&
+        } else if ($command == BotCommand::ADMIN_COMMANDS->value &&
             User::isChatAdmin($chatID, $message['from']['id'])) {
             $botCommandsHandler->adminCommands();
             return;
         } elseif (
-            $command == AdminBotCommands::SET_SPIN_PRICE
+            $command == AdminBotCommand::SET_SPIN_PRICE
             && User::isChatAdmin($chatID, $message['from']['id'])
         ) {
             $adminBotCommandHandler = new AdminBotCommandsHandler($chatID);

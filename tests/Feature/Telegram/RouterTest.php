@@ -4,9 +4,11 @@ namespace Tests\Feature\Telegram;
 
 use App\Models\User;
 use App\Service\Gambling\Enum\Emoji;
-use App\Service\Telegram\Enum\BotCommands;
+use App\Service\Telegram\Enum\BotCommand;
+use App\Service\Telegram\Enum\MessageType;
 use App\Service\Telegram\Router;
 use App\Service\Telegram\Users\Roles;
+use Database\Factories\Tg\MessageFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Tests\TestCase;
@@ -46,15 +48,10 @@ class RouterTest extends TestCase
     /** @test */
     public function isHandlesGamblingMessages()
     {
-        $tgFactory = new TgMessageFactory();
-
-        $request = $this->createRequest([
-            'message' => [
-                'chat' => ['id' => $this->chatId, 'type' => 'supergroup'],
-                'from' => ['id' => $this->regularUserId],
-                'dice' => ['emoji' => Emoji::CASINO]
-            ]
-        ]);
+        $tgFactory = MessageFactory::create(MessageType::GAMBLING_MESSAGE);
+        $tgFactory->createMessage();
+        $message = $tgFactory->getMessage();
+        $request = $this->createRequest($message);
         $response = $this->router->route($request);
         $this->assertEquals(200, $response->getStatusCode());
     }
@@ -63,19 +60,14 @@ class RouterTest extends TestCase
     public function isHandlesBotCommands()
     {
         $commands = array_map(function ($item) {
-            return '/' . $item->value;
-        }, BotCommands::cases());
+            return $item;
+        }, BotCommand::cases());
 
         foreach ($commands as $command) {
-            $request = $this->createRequest([
-                'message' => [
-                    'chat'     => ['id' => $this->chatId, 'type' => 'supergroup'],
-                    'from'     => ['id' => $this->adminUserId],
-                    'text'     => $command,
-                    'entities' => [['type' => 'bot_command']]
-                ]
-            ]);
-
+            $tgFactory = MessageFactory::create(MessageType::BOT_COMMAND);
+            $tgFactory->createMessage($command);
+            $message = $tgFactory->getMessage();
+            $request = $this->createRequest($message);
             $response = $this->router->route($request);
             $this->assertEquals(200, $response->getStatusCode());
         }
@@ -84,14 +76,10 @@ class RouterTest extends TestCase
     /** @test */
     public function isHandlesAdminCommands()
     {
-        $request = $this->createRequest([
-            'message' => [
-                'chat'     => ['id' => $this->chatId, 'type' => 'group'],
-                'from'     => ['id' => $this->adminUserId],
-                'text'     => '/set_spin_price 10',
-                'entities' => [['type' => 'bot_command']]
-            ]
-        ]);
+        $tgFactory = MessageFactory::create(MessageType::ADMIN_BOT_COMMAND);
+        $tgFactory->createMessage();
+        $message = $tgFactory->getMessage();
+        $request = $this->createRequest($message);
 
         $response = $this->router->route($request);
         $this->assertEquals(200, $response->getStatusCode());

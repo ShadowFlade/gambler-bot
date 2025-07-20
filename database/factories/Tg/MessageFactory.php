@@ -3,6 +3,7 @@
 namespace Database\Factories\Tg;
 
 use App\Service\Gambling\Enum\Emoji;
+use App\Service\Telegram\Enum\MessageType;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -10,14 +11,27 @@ use App\Service\Gambling\Enum\Emoji;
 class MessageFactory
 {
 
-    public static function create(string $type){
+    public static function create(MessageType $type): \Database\Factories\Tg\Contract\Message
+    {
         $chatId = fake()->uuid();
-        $fromId = fake()->biasedNumberBetween(1,100);
-        return match($type) {
-            'gambling' => new GamblingMessageFactory($chatId, $fromId),
-            'botCommand' => new
+        $fromId = fake()->biasedNumberBetween(1, 100);
+
+        return match ($type->value) {
+            MessageType::GAMBLING_MESSAGE->value => new GamblingMessageFactory(
+                $chatId,
+                $fromId
+            ),
+            MessageType::BOT_COMMAND->value => new BotCommandFactory(
+                $chatId,
+                $fromId
+            ),
+            MessageType::ADMIN_BOT_COMMAND->value => new AdminBotCommandFactory(
+                $chatId,
+                $fromId
+            )
         };
     }
+
     public function createMessage(
         int    $userId,
         string $chatId,
