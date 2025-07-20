@@ -35,4 +35,8 @@ class User extends Authenticatable
         'tg_user_id',
         'role'
     ];
+    public function gamblingMessages()
+    {
+        return $this->hasMany(GamblingMessage::class, 'user_id', 'tg_user_id');
+    }
 }

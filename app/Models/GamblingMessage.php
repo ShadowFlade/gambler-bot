@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int $id
  * @property int $chat_id
- * @property int $tg_user_id
  * @property int $spin_price
  * @property string $emoji_type
  * @property string $win_value
@@ -30,9 +30,9 @@ class GamblingMessage extends Model
         'win_price',
         'spin_price'
     ];
-    public function user(): HasOne
+    public function user(): BelongsTo
     {
-        return $this->hasOne(User::class, 'tg_user_id', 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
 }

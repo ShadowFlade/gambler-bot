@@ -22,27 +22,29 @@ use Illuminate\Support\Facades\Log;
 
 class Router
 {
-    public function route(Request $request)
+    public function route(Request $request): Response
     {
         $data = $request->all();
 
         RequestLogger::log($request);
         $message = $data['message'] ?? $data['edited_message'] ?? null;
+
         if (isset($message['reply_to_message'])) {
             $repliesHandler = new RepliesHandler($message['chat']['id'],
-	            $message['from']['id']);
-            $repliesHandler->handle($message);
+                $message['from']['id']);
+            $resp = $repliesHandler->handle($message);
+            return $resp;
         } else if (!is_null($message)) {
-            $this->handleIncomingTgMessage($message);
-            return;
+            $resp = $this->handleIncomingTgMessage($message);
+            return $resp;
         } else if (isset($data['callback_query'])) {
             $callbackHandler = new CallbackQueryHandler(
                 $data['callback_query']['message']['chat']['id'],
                 $data['callback_query'],
-	            $data['callback_query']['from']['id']
+                $data['callback_query']['from']['id']
             );
-            $callbackHandler->handle();
-            return;
+            $resp = $callbackHandler->handle();
+            return $resp;
         }
     }
 
@@ -57,7 +59,7 @@ class Router
     }
 
 
-    private function handleIncomingTgMessage(array $message): Response|null
+    private function handleIncomingTgMessage(array $message): Response
     {
         $messageType = $this->determineTypeOfMessage($message);
         TgLogger::log(
@@ -80,9 +82,22 @@ class Router
         } else if ($messageType == MessageType::GAMBLING_MESSAGE) {
             $gamblingMessage = new GamblingMessage();
             $resp = $gamblingMessage->handleMessage($message);
-        } else if ($messageType ==
-            MessageType::BOT_COMMAND || $messageType ==
-            MessageType::ADMIN_BOT_COMMAND) {
+            if($resp instanceof \Error) {
+                return new Response(
+                    [
+                        'SUCCESS' => false,
+                        'ERROR' => $resp->getMessage()
+                    ],
+                    400
+                );
+            }
+            return new Response(['SUCCESS' => true], 200);
+        } else if
+        (
+            $messageType == MessageType::BOT_COMMAND
+            || $messageType == MessageType::ADMIN_BOT_COMMAND
+            || $messageType == MessageType::GAMBLING_MESSAGE
+        ) {
             $command = $this->getBotCommand($message);
             $this->handleBotCommands($command, $message);
         }
@@ -160,6 +175,7 @@ class Router
 
         $chatID = $message['chat']['id'];
         $botCommandsHandler = new BotCommandsHandler($chatID);
+
         if ($command == BotCommands::REGISTER->value) {
             $botCommandsHandler->register($message);
         } elseif ($command == BotCommands::STATISTICS->value) {

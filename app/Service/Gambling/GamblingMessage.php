@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 class GamblingMessage
 {
 
-    public function handleMessage(array $message): array|null
+    public function handleMessage(array $message): array| \Error
     {
         Log::build([
             'driver' => 'daily',
@@ -24,7 +24,7 @@ class GamblingMessage
         $message = $this->filterCasinoEmojis($message);
 
         if (is_null($message)) {
-            return null;
+            return new \Error('Message is null');
         }
 
         $this->storeMessage($message);

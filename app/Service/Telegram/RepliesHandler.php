@@ -5,6 +5,7 @@ namespace App\Service\Telegram;
 use App\Service\Base\Parser\Number;
 use App\Service\Gambling\AdminBotCommandsHandler;
 use App\Service\Telegram\Users\User;
+use Illuminate\Http\Response;
 
 class RepliesHandler
 {
@@ -13,11 +14,13 @@ class RepliesHandler
 	public function handle(array $message)
 	{
 		if (
-			isset($message['reply_to_message']['text']) && 
+			isset($message['reply_to_message']['text']) &&
 			$message['reply_to_message']['text'] == BotReplies::getSetPriceForSpinText()
 		) {
 			$this->setSpinPrice($message['text']);
+            return new Response(['SUCCESS' => true], 200);
 		}
+        return new Response(['SUCCESS' => false], 400);
 	}
 
 	public function setSpinPrice(string $priceText)
