@@ -8,4 +8,5 @@ enum BotCommands: string
     case ADMIN_COMMANDS = 'admin_commands'; //returns the list of admin
     // commands (not neccecarily THE list, but some type of list/list of
     // buttons)
+    case GAMBLER_OF_DAY = 'gambler_of_day';
 }
