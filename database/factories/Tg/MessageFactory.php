@@ -9,6 +9,15 @@ use App\Service\Gambling\Enum\Emoji;
  */
 class MessageFactory
 {
+
+    public static function create(string $type){
+        $chatId = fake()->uuid();
+        $fromId = fake()->biasedNumberBetween(1,100);
+        return match($type) {
+            'gambling' => new GamblingMessageFactory($chatId, $fromId),
+            'botCommand' => new
+        };
+    }
     public function createMessage(
         int    $userId,
         string $chatId,
@@ -41,17 +50,6 @@ class MessageFactory
             'first_name' => $firstName,
             'last_name'  => $lastName,
             'username'   => 'test_user',
-        ];
-    }
-
-    public function createDice(
-        string $emoji = Emoji::CASINO->value,
-    ): array
-    {
-        $value = fake()->biasedNumberBetween(1,64);
-        return [
-            'emoji' => $emoji,
-            'value' => $value,
         ];
     }
 }

@@ -1,0 +1,7 @@
+# .tokeignore
+*.json
+*.md
+/data/
+/vendor/
+vendor
+*.blade*
