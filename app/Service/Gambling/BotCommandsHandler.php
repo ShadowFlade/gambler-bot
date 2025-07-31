@@ -100,16 +100,15 @@ class BotCommandsHandler
     public function info()
     {
         $bot = new Bot($this->chatID);
-        $msg = "Коэффициенты:\n\n";
+        $msg = "Коэффициенты:\n";
 
         $prices = Price::query()
-            ->where('type', '=', 'win')
             ->where('chat_id', '=', $this->chatID)
             ->orderBy('price', 'desc')
             ->get();
 
         function pad(string $word) {
-            return mb_str_pad($word . ' ', 70, ".");
+            return mb_str_pad($word . ' ', 45, ".");
         }
 
         $prices->each(function ($price) use (
@@ -137,7 +136,19 @@ class BotCommandsHandler
             }
         });
 
-//        $bot->sendMessage($msg);
+	    $spinPrice = array_filter(
+		    $prices->toArray(),
+		    function ($price) {
+			    return $price['type'] == 'spin';
+		    }
+	    );
+
+	    if (count($spinPrice) > 0) {
+		    $msg .= pad("\nЦена крутки: ");
+		    $msg .= ' ' . $spinPrice[0]['price'] . "\n";
+	    }
+
+
         $bot->sendRawMessage(['text' => "$msg",'parse_mode' => 'html']);
     }
 }
