@@ -9,6 +9,7 @@ use App\Service\ProjectGlobal;
 use App\Service\Telegram\Bot;
 use App\Service\Telegram\BotMessages\System;
 use App\Service\Telegram\Enum\BotCommands;
+use App\Service\Telegram\Enum\MessageType;
 use App\Service\Telegram\Enum\Stickers\WomanEmotions;
 
 class AdminBotCommandsHandler
@@ -36,7 +37,10 @@ class AdminBotCommandsHandler
             //TODO:logging here
             return;
         }
-
+	    TgLogger::log(
+		    ['price' => $price,'newSpinPrice' => $newSpinPrice],
+		    'spin_price'
+	    );
         if ($newSpinPrice > $price) {
             $message = "Эй, лудики!\nБосс решил, что вы совсем зажрались и решил поднять ставку. А ну-ка скажите А-А-А...";
             $tgBot->sendMessage($message);

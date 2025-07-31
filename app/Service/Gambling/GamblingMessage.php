@@ -80,6 +80,7 @@ class GamblingMessage
                 ->first();
             $newMessage->win_price = $price * $coef->price;
 
+
             $tgBot = new Bot($chatId);
             $tgBot->sendTimoshaGif();
         } else if ($resultDicValues ==
@@ -108,6 +109,7 @@ class GamblingMessage
             $newMessage->win_price = $price * $coef->price;
         } else {
             $newMessage->win_price = 1;
+
         }
         $isSuccess = $newMessage->saveOrFail();
         Log::build([

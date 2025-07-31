@@ -166,7 +166,23 @@ class Router
             $botCommandsHandler->register($message);
         } elseif ($command == BotCommands::STATISTICS->value) {
             $botCommandsHandler->statistics($message);
-        } else if ($command == BotCommands::ADMIN_COMMANDS->value &&
+        } else if (
+            $command == \App\Service\Telegram\Enum\BotCommands::GAMBLER_OF_DAY->value
+        ) {
+            $stats = new \App\Service\Gambling\Statistics($chatID);
+            $gamblerOfDay = $stats->getGamblerOfDay();
+
+            $tgBot = new Bot($chatID);
+            if (is_null($gamblerOfDay)) {
+                $tgBot->sendMessage('Сегодня еще никто не лудоманил 😢');
+                return;
+            }
+
+            $name = $gamblerOfDay->user->name;
+            $count = $gamblerOfDay->gamble_count;
+            $tgBot->sendMessage("🎰 Лудик дня: $name 🎰\nКоличество ставок: $count");
+        }
+        else if ($command == BotCommands::ADMIN_COMMANDS->value &&
             User::isChatAdmin($chatID, $message['from']['id'])) {
             $botCommandsHandler->adminCommands();
             return;
@@ -180,8 +196,10 @@ class Router
             $arguments = $this->getBotCommandArguments($message['text'],
                 $command);
             $adminBotCommandHandler->setSpinPrice($arguments[0]);
+
         } elseif ($command == BotCommands::INFO->value) {
             $botCommandsHandler->info();
+
         }
     }
 

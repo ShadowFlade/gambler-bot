@@ -9,4 +9,5 @@ enum BotCommands: string
     // commands (not neccecarily THE list, but some type of list/list of
     // buttons)
     case INFO = 'info';
+    case GAMBLER_OF_DAY = 'gambler_of_day';
 }
