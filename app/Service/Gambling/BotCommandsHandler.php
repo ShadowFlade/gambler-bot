@@ -100,7 +100,7 @@ class BotCommandsHandler
     public function info()
     {
         $bot = new Bot($this->chatID);
-        $msg = "Типы выигрышей:\n\n";
+        $msg = "Коэффициенты:\n\n";
 
         $prices = Price::query()
             ->where('type', '=', 'win')
@@ -117,7 +117,7 @@ class BotCommandsHandler
             &$word,
             &$priceText,
         ) {
-            $priceText = (string)$price->price . "$";
+            $priceText = (string)$price->price;
 
             if ($price->sub_type == WinningSubtype::LEMONS->value) {
                 $word = pad("LEMONS: ").' ';
