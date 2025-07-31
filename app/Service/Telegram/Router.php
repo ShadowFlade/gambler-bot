@@ -160,6 +160,8 @@ class Router
 
         $chatID = $message['chat']['id'];
         $botCommandsHandler = new BotCommandsHandler($chatID);
+
+
         if ($command == BotCommands::REGISTER->value) {
             $botCommandsHandler->register($message);
         } elseif ($command == BotCommands::STATISTICS->value) {
@@ -170,12 +172,16 @@ class Router
             return;
         } elseif (
             $command == AdminBotCommands::SET_SPIN_PRICE
+            //TODO[refactoring]:почему это работает? тут же разные типы
+        // (нет value)
             && User::isChatAdmin($chatID, $message['from']['id'])
         ) {
             $adminBotCommandHandler = new AdminBotCommandsHandler($chatID);
             $arguments = $this->getBotCommandArguments($message['text'],
                 $command);
             $adminBotCommandHandler->setSpinPrice($arguments[0]);
+        } elseif ($command == BotCommands::INFO->value) {
+            $botCommandsHandler->info();
         }
     }
 

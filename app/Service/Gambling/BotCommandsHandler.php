@@ -2,6 +2,8 @@
 
 namespace App\Service\Gambling;
 
+use App\Models\Price;
+use App\Service\Gambling\Enum\WinningSubtype;
 use App\Service\Log\TgLogger;
 use App\Service\Telegram\Bot;
 use App\Service\Telegram\Enum\AdminBotCommands;
@@ -93,5 +95,49 @@ class BotCommandsHandler
         $resp = $tgBot->sendRawMessage($data);
 
         TgLogger::log($resp, 'admin_commands');
+    }
+
+    public function info()
+    {
+        $bot = new Bot($this->chatID);
+        $msg = "Типы выигрышей:\n\n";
+
+        $prices = Price::query()
+            ->where('type', '=', 'win')
+            ->where('chat_id', '=', $this->chatID)
+            ->orderBy('price', 'desc')
+            ->get();
+
+        function pad(string $word) {
+            return mb_str_pad($word . ' ', 70, ".");
+        }
+
+        $prices->each(function ($price) use (
+            &$msg,
+            &$word,
+            &$priceText,
+        ) {
+            $priceText = (string)$price->price . "$";
+
+            if ($price->sub_type == WinningSubtype::LEMONS->value) {
+                $word = pad("LEMONS: ").' ';
+                $msg .= $word . $priceText . "\n";
+
+            } else if ($price->sub_type == WinningSubtype::BARS->value) {
+                $word = pad("BARS: ") . '.... ';
+                $msg .= $word . $priceText . "\n";
+
+            } else if ($price->sub_type == WinningSubtype::JACKPOT->value) {
+                $word = pad("777: ") . '..... ';
+                $msg .= $word  . $priceText . "\n";
+
+            } else if ($price->sub_type == WinningSubtype::CHERRIES->value) {
+                $word = pad("CHERRIES: ") . ' ';
+                $msg .= $word . $priceText . "\n";
+            }
+        });
+
+//        $bot->sendMessage($msg);
+        $bot->sendRawMessage(['text' => "$msg",'parse_mode' => 'html']);
     }
 }
