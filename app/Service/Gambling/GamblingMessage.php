@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Service\Gambling;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
+use App\Service\Gambling\Enum\WinningSubtype;
 
 class GamblingMessage
 {
@@ -46,7 +47,7 @@ class GamblingMessage
         $tgUserId = $message['from']['id'];
         $isUserExists = User::isExists($chatId, $tgUserId);
         if (!$isUserExists) {
-            TgLogger::log("User $tgUserId not found",'users');
+            TgLogger::log("User $tgUserId not found", 'users');
             return false;
         }
         Log::build([
@@ -65,28 +66,50 @@ class GamblingMessage
         $price = $stats->getSpinPrice(null);
         $newMessage->spin_price = $price;
 
-	    if (isset($message['forward_origin']) || isset($message['forward_from'])) {
-		    return false;
-	    }
+        if (isset($message['forward_origin']) || isset($message['forward_from'])) {
+            return false;
+        }
 
-        if ($resultDicValues == Gambling\Enum\WinningValue::JACKPOT->value) {
+        if ($resultDicValues == Gambling\Enum\WinningSubtype::JACKPOT->value) {
 //            $newMessage->win_price = Enum\WinningPrice::JACKPOT->value;
-	        $newMessage->win_price = $price * 40;
+            //TODO[refactoring]:вынести это в репозиторий???
+            $coef = Price::query()
+                ->where('type', '=', 'win')
+                ->where('sub_type', '=', WinningSubtype::CHERRIES)
+                ->select('value')
+                ->first();
+            $newMessage->win_price = $price * $coef->price;
+
 
             $tgBot = new Bot($chatId);
             $tgBot->sendTimoshaGif();
         } else if ($resultDicValues ==
-	        Gambling\Enum\WinningValue::CHERRIES->value) {
-	        $newMessage->win_price = $price * 10;
+            Gambling\Enum\WinningSubtype::CHERRIES->value) {
+            $coef = Price::query()
+                ->where('type', '=', 'win')
+                ->where('sub_type', '=', WinningSubtype::CHERRIES)
+                ->select('value')
+                ->first();
+            $newMessage->win_price = $price * $coef->price;
         } else if ($resultDicValues ==
-	        Gambling\Enum\WinningValue::BARS->value) {
-	        $newMessage->win_price = $price * 15;
+            Gambling\Enum\WinningSubtype::BARS->value) {
+            $coef = Price::query()
+                ->where('type', '=', 'win')
+                ->where('sub_type', '=', WinningSubtype::BARS)
+                ->select('value')
+                ->first();
+            $newMessage->win_price = $price * $coef->price;
         } else if ($resultDicValues ==
-	        Gambling\Enum\WinningValue::LEMONS->value) {
-	        $newMessage->win_price = $price * 7;
-        }
-		else {
-            $newMessage->win_price = Enum\WinningPrice::DEFAULT->value;
+            Gambling\Enum\WinningSubtype::LEMONS->value) {
+            $coef = Price::query()
+                ->where('type', '=', 'win')
+                ->where('sub_type', '=', WinningSubtype::LEMONS)
+                ->select('value')
+                ->first();
+            $newMessage->win_price = $price * $coef->price;
+        } else {
+            $newMessage->win_price = 1;
+
         }
         $isSuccess = $newMessage->saveOrFail();
         Log::build([
