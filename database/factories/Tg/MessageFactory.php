@@ -5,10 +5,8 @@ namespace Database\Factories\Tg;
 use App\Service\Gambling\Enum\Emoji;
 use App\Service\Telegram\Enum\MessageType;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
- */
-class MessageFactory
+
+class MessageFactory //well its not really a FACTORY
 {
 
     public static function create(MessageType $type): \Database\Factories\Tg\Contract\Message
