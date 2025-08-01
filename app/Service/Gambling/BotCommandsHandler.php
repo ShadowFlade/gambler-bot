@@ -55,10 +55,14 @@ class BotCommandsHandler
         if (is_null($mostWinsByCounts)) {
             return;
         }
-        foreach ($mostWinsByCounts->win_percent as $userID
-        => $winPercentItem) {
-            $balance = -$winPercentItem->spentOnSpins +
-                $mostWinsByMoneyArr[$userID]['win_sum'];
+        foreach ($mostWinsByCounts->win_percent as $userID => $winPercentItem) {
+            $balance = number_format(
+                -$winPercentItem->spentOnSpins +
+                $mostWinsByMoneyArr[$userID]['win_sum'],
+                0,
+                ',',
+                '.'
+            );
             $message .= $winPercentItem->name . ": " .
                 $balance . '$ ( ' .
                 $mostWinsByCounts->win_count[$userID]->userWinCount . '/'
