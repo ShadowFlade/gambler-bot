@@ -254,7 +254,7 @@
             <div class="release-header">
                 <span class="version">v0.2</span>
                 <span class="date">13.07.2025</span>
-                <span class="status.in-progress">В работе</span>
+                <span class="status.released">Опубликован</span>
             </div>
             <h2 class="release-title">Дополнения функционала статистики</h2>
             <p class="release-description">
@@ -266,6 +266,32 @@
                 </li>
                 <li>
                     <span class="feature-type new">Статистика по типам выигранных слотов</span>
+                </li>
+            </ul>
+        </section>
+
+        <section class="release">
+            <div class="release-header">
+                <span class="version">v0.3</span>
+                <span class="date">01.08.2025</span>
+                <span class="status.released">Опубликован</span>
+            </div>
+            <h2 class="release-title">Quality of life improvements</h2>
+            <p class="release-description">
+                Minor release
+            </p>
+            <ul class="features">
+                <li>
+                    <span class="feature-type new">Улучшено форматирование</span>
+                    <div>
+                        <img src="{{asset('/img/3.jpg')}}" alt="">
+                    </div>
+                </li>
+                <li>
+                    <span class="feature-type new">Цены вынесены в БД</span>
+                </li>
+                <li>
+                    <span class="feature-type new">Добавлена команда <code>/info</code></span>
                 </li>
             </ul>
         </section>
