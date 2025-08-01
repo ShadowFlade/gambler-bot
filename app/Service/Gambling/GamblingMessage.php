@@ -71,12 +71,12 @@ class GamblingMessage
             return false;
         }
 
-        if ($resultDicValues == WinningSubtype::JACKPOT->value) {
+        if ($resultDicValues == WinningValue::JACKPOT->value) {
 //            $newMessage->win_price = Enum\WinningPrice::JACKPOT->value;
             //TODO[refactoring]:вынести это в репозиторий???
             $coef = Price::query()
                 ->where('type', '=', 'win')
-                ->where('sub_type', '=', WinningSubtype::CHERRIES)
+                ->where('sub_type', '=', WinningSubtype::CHERRIES->value)
                 ->select('price')
                 ->first();
             $newMessage->win_price = $price * $coef->price;
@@ -84,24 +84,21 @@ class GamblingMessage
 
             $tgBot = new Bot($chatId);
             $tgBot->sendTimoshaGif();
-        } else if ($resultDicValues ==
-            WinningValue::CHERRIES->value) {
+        } else if ($resultDicValues == WinningValue::CHERRIES->value) {
             $coef = Price::query()
                 ->where('type', '=', 'win')
                 ->where('sub_type', '=', WinningSubtype::CHERRIES->value)
                 ->select('price')
                 ->first();
             $newMessage->win_price = $price * $coef->price;
-        } else if ($resultDicValues ==
-            WinningValue::BARS->value) {
+        } else if ($resultDicValues == WinningValue::BARS->value) {
             $coef = Price::query()
                 ->where('type', '=', 'win')
                 ->where('sub_type', '=', WinningSubtype::BARS->value)
                 ->select('price')
                 ->first();
             $newMessage->win_price = $price * $coef->price;
-        } else if ($resultDicValues ==
-            WinningValue::LEMONS->value) {
+        } else if ($resultDicValues == WinningValue::LEMONS->value) {
             $coef = Price::query()
                 ->where('type', '=', 'win')
                 ->where('sub_type', '=', WinningSubtype::LEMONS->value)
