@@ -68,7 +68,7 @@ class BotCommandsHandler
 
             $winPercentItem->balance = $balance;
             $winPercentItem->nameMsg = $winPercentItem->name;
-            $winPercentItem->restOfMsg = ": " .
+            $winPercentItem->restOfMsg = " : " .
                 $balance . '$ ( ' .
                 $mostWinsByCounts->win_count[$userID]->userWinCount . '/'
                 . $mostWinsByCounts->win_percent[$userID]->totalCount . ' ' .
@@ -87,7 +87,7 @@ class BotCommandsHandler
                 $msgName = "👑 " . $winPercentItem->nameMsg . " 👑";
                 $winPercentItem->restOfMsg .= "\n";
             } elseif($i === count($mostWinsByCounts->win_percent) - 1) {
-                $msgName = "🤡 " . $winPercentItem->nameMsg . " 🤡";
+                $msgName = "\n" . "🤡 " . $winPercentItem->nameMsg . " 🤡";
             } else {
                 $msgName = $winPercentItem->nameMsg;
             }
