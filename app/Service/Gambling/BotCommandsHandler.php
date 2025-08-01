@@ -55,6 +55,8 @@ class BotCommandsHandler
         if (is_null($mostWinsByCounts)) {
             return;
         }
+
+
         foreach ($mostWinsByCounts->win_percent as $userID => $winPercentItem) {
             $balance = number_format(
                 -$winPercentItem->spentOnSpins +
@@ -63,13 +65,33 @@ class BotCommandsHandler
                 ',',
                 '.'
             );
-            $message .= $winPercentItem->name . ": " .
+
+            $winPercentItem->balance = $balance;
+            $winPercentItem->nameMsg = $winPercentItem->name;
+            $winPercentItem->restOfMsg = ": " .
                 $balance . '$ ( ' .
                 $mostWinsByCounts->win_count[$userID]->userWinCount . '/'
                 . $mostWinsByCounts->win_percent[$userID]->totalCount . ' ' .
                 round($winPercentItem->userWinPercent, 4) . '%)' .
                 "\n";
+        }
 
+        usort(
+            $mostWinsByCounts->win_percent,
+            function($item1,$item2) {
+                return $item2->balance <=> $item1->balance;
+        });
+        foreach (array_values($mostWinsByCounts->win_percent) as $i =>
+                 &$winPercentItem) {
+            if($i === 0) {
+                $msgName = "👑 " . $winPercentItem->nameMsg . " 👑";
+                $winPercentItem->restOfMsg .= "\n";
+            } elseif($i === count($mostWinsByCounts->win_percent) - 1) {
+                $msgName = "🤡 " . $winPercentItem->nameMsg . " 🤡";
+            } else {
+                $msgName = $winPercentItem->nameMsg;
+            }
+            $message .= $msgName . $winPercentItem->restOfMsg;
         }
 
         if (is_null($mostWinsByCounts)) {
