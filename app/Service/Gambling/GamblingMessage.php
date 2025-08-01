@@ -76,7 +76,7 @@ class GamblingMessage
             //TODO[refactoring]:вынести это в репозиторий???
             $coef = Price::query()
                 ->where('type', '=', 'win')
-                ->where('sub_type', '=', WinningSubtype::CHERRIES->value)
+                ->where('sub_type', '=', WinningSubtype::JACKPOT->value)
                 ->select('price')
                 ->first();
             $newMessage->win_price = $price * $coef->price;
