@@ -11,6 +11,7 @@ use App\Service\Gambling;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use App\Service\Gambling\Enum\WinningSubtype;
+use App\Service\Gambling\Enum\WinningValue;
 
 class GamblingMessage
 {
@@ -70,13 +71,13 @@ class GamblingMessage
             return false;
         }
 
-        if ($resultDicValues == Gambling\Enum\WinningSubtype::JACKPOT->value) {
+        if ($resultDicValues == WinningSubtype::JACKPOT->value) {
 //            $newMessage->win_price = Enum\WinningPrice::JACKPOT->value;
             //TODO[refactoring]:вынести это в репозиторий???
             $coef = Price::query()
                 ->where('type', '=', 'win')
                 ->where('sub_type', '=', WinningSubtype::CHERRIES)
-                ->select('value')
+                ->select('price')
                 ->first();
             $newMessage->win_price = $price * $coef->price;
 
@@ -84,27 +85,27 @@ class GamblingMessage
             $tgBot = new Bot($chatId);
             $tgBot->sendTimoshaGif();
         } else if ($resultDicValues ==
-            Gambling\Enum\WinningSubtype::CHERRIES->value) {
+            WinningValue::CHERRIES->value) {
             $coef = Price::query()
                 ->where('type', '=', 'win')
-                ->where('sub_type', '=', WinningSubtype::CHERRIES)
-                ->select('value')
+                ->where('sub_type', '=', WinningSubtype::CHERRIES->value)
+                ->select('price')
                 ->first();
             $newMessage->win_price = $price * $coef->price;
         } else if ($resultDicValues ==
-            Gambling\Enum\WinningSubtype::BARS->value) {
+            WinningValue::BARS->value) {
             $coef = Price::query()
                 ->where('type', '=', 'win')
-                ->where('sub_type', '=', WinningSubtype::BARS)
-                ->select('value')
+                ->where('sub_type', '=', WinningSubtype::BARS->value)
+                ->select('price')
                 ->first();
             $newMessage->win_price = $price * $coef->price;
         } else if ($resultDicValues ==
-            Gambling\Enum\WinningSubtype::LEMONS->value) {
+            WinningValue::LEMONS->value) {
             $coef = Price::query()
                 ->where('type', '=', 'win')
-                ->where('sub_type', '=', WinningSubtype::LEMONS)
-                ->select('value')
+                ->where('sub_type', '=', WinningSubtype::LEMONS->value)
+                ->select('price')
                 ->first();
             $newMessage->win_price = $price * $coef->price;
         } else {
