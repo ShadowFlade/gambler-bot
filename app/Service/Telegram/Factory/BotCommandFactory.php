@@ -1,26 +1,31 @@
 <?php
 
-namespace Database\Factories\Tg;
+namespace App\Service\Telegram\Factory;
 
 use App\Service\Telegram\Enum\BotCommand;
 
 class BotCommandFactory extends Message implements
-    \Database\Factories\Tg\Contract\Message
+    \App\Service\Telegram\Contract\Message
 {
-    public function __construct(int $chatId, int $fromId)
+
+    private BotCommand $command;
+    private array $message;
+    public function __construct(
+        string $chatId,
+        int $fromId,
+        BotCommand $command,
+    )
     {
         $this->fromId = $fromId;
         $message = parent::createMessageSchema($chatId);
         $this->message = $message;
+        $this->command = $command;
     }
 
 
-    public function createMessage($command)
+    public function createMessage()
     {
-        if (!$command instanceof BotCommand) {
-            throw new \Error('Expected BotCommand instance');
-        }
-        $this->insertBotCommand($command);
+        $this->insertBotCommand($this->command);
     }
 
 

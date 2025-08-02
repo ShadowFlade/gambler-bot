@@ -1,8 +1,6 @@
 <?php
 
-namespace Database\Factories\Tg\Contract;
-
-use App\Service\Telegram\Enum\BotCommand;
+namespace App\Service\Telegram\Contract;
 
 interface Message
 {
@@ -13,5 +11,5 @@ interface Message
      * @param mixed $arguments
      * @return mixed
      */
-    public function createMessage(mixed $arguments);
+    public function createMessage();
 }

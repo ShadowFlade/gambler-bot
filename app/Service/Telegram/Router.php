@@ -171,8 +171,10 @@ class Router
 
     private function handleBotCommands(string $command, array $message): void
     {
-        TgLogger::log(['command' => $command, 'message' => $message], 'handle_bot_commands');
-
+        TgLogger::log(
+            ['command' => $command, 'message' => $message],
+            'handle_bot_commands'
+        );
         $chatID = $message['chat']['id'];
         $botCommandsHandler = new BotCommandsHandler($chatID);
 

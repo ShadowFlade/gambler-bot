@@ -1,15 +1,19 @@
 <?php
 
-namespace Database\Factories\Tg;
+namespace App\Service\Telegram\Factory;
 
-use App\Service\Gambling\Enum\Emoji;
+use App\Service\Telegram\Enum\AdminBotCommand;
+use App\Service\Telegram\Enum\BotCommand;
 use App\Service\Telegram\Enum\MessageType;
 
 
 class MessageFactory //well its not really a FACTORY
 {
 
-    public static function create(MessageType $type): \Database\Factories\Tg\Contract\Message
+    public static function create(
+        MessageType $type,
+        ?BotCommand $command = BotCommand::REGISTER,
+    ): \App\Service\Telegram\Contract\Message
     {
         $chatId = fake()->uuid();
         $fromId = fake()->biasedNumberBetween(1, 100);
@@ -21,11 +25,13 @@ class MessageFactory //well its not really a FACTORY
             ),
             MessageType::BOT_COMMAND->value => new BotCommandFactory(
                 $chatId,
-                $fromId
+                $fromId,
+                $command
             ),
             MessageType::ADMIN_BOT_COMMAND->value => new AdminBotCommandFactory(
                 $chatId,
-                $fromId
+                $fromId,
+                AdminBotCommand::SET_SPIN_PRICE
             )
         };
     }
@@ -52,7 +58,6 @@ class MessageFactory //well its not really a FACTORY
 
     public function createFromNotBot(int $userId)
     {
-
         $firstName = fake()->firstName();;
         $lastName = fake()->lastName();
 

@@ -1,14 +1,14 @@
 <?php
 
-namespace Database\Factories\Tg;
+namespace App\Service\Telegram\Factory;
 
 use App\Service\Gambling\Enum\Emoji;
 
-class GamblingMessageFactory extends Message
+class GamblingMessageFactory extends Message implements \App\Service\Telegram\Contract\Message
 {
     private array $message;
 
-    public function __construct(int $chatId, int $fromId)
+    public function __construct(string $chatId, int $fromId)
     {
         $this->fromId = $fromId;
         $message = parent::createMessageSchema($chatId);
@@ -23,20 +23,6 @@ class GamblingMessageFactory extends Message
 
     }
 
-    public function createFrom(int $userId)
-    {
-        $firstName = fake()->firstName();;
-        $lastName = fake()->lastName();
-
-        return [
-            'id'         => $userId,
-            'is_bot'     => false,
-            'first_name' => $firstName,
-            'last_name'  => $lastName,
-            'username'   => 'test_user',
-        ];
-    }
-
     public function createDice(
         string $emoji = Emoji::CASINO->value,
     ): array
@@ -48,9 +34,11 @@ class GamblingMessageFactory extends Message
         ];
     }
 
-    public function get()
+    public function getMessage(): array
     {
-        return $this->message;
+        return [
+            'message' => $this->message,
+        ];
     }
 
 }

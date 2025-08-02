@@ -9,7 +9,11 @@ use Illuminate\Http\Client\Response;
 
 class CallbackQueryHandler
 {
-    public function __construct(private int $chatID, private array $callbackQuery, private int $tgUserID) { }
+    public function __construct(
+        private string $chatID,
+        private array $callbackQuery,
+        private string $tgUserID
+    ) { }
 
     public function handle(): \Illuminate\Http\Response
     {
@@ -19,6 +23,7 @@ class CallbackQueryHandler
             $resp = $this->replySetSpinPrice();
             return $resp;
         }
+
         return new \Illuminate\Http\Response('Invalid data', 400);
     }
 

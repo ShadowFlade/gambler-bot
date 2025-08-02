@@ -3,12 +3,12 @@
 namespace Tests\Feature\Telegram;
 
 use App\Models\User;
-use App\Service\Gambling\Enum\Emoji;
+use App\Service\Telegram\BotReplies;
 use App\Service\Telegram\Enum\BotCommand;
 use App\Service\Telegram\Enum\MessageType;
+use App\Service\Telegram\Factory\MessageFactory;
 use App\Service\Telegram\Router;
 use App\Service\Telegram\Users\Roles;
-use Database\Factories\Tg\MessageFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Tests\TestCase;
@@ -64,8 +64,11 @@ class RouterTest extends TestCase
         }, BotCommand::cases());
 
         foreach ($commands as $command) {
-            $tgFactory = MessageFactory::create(MessageType::BOT_COMMAND);
-            $tgFactory->createMessage($command);
+            $tgFactory = MessageFactory::create(
+                MessageType::BOT_COMMAND,
+                $command
+            );
+            $tgFactory->createMessage();
             $message = $tgFactory->getMessage();
             $request = $this->createRequest($message);
             $response = $this->router->route($request);
@@ -92,7 +95,7 @@ class RouterTest extends TestCase
         $request = $this->createRequest([
             'message' => [
                 'chat'     => ['id' => $this->chatId, 'type' => 'group'],
-                'from'     => ['id' => $this->regularUserId,'first_name' => ],
+                'from'     => ['id' => $this->regularUserId, 'first_name' => 'test'],
                 'text'     => '/set_spin_price 10',
                 'entities' => [['type' => 'bot_command']]
             ]
@@ -106,16 +109,21 @@ class RouterTest extends TestCase
     /** @test */
     public function isHandlesCallbackQueries()
     {
+        $message = new \App\Service\Telegram\Factory\Message();
+
+        $message->createMessageSchema($this->chatId);
+        $msg = $message->getMessage();
+        $callbackQuery = $message->createCallbackQuery(
+            'set_spin_price',
+            $this->chatId,
+            $this->adminUserId
+        );
         $request = $this->createRequest([
-            'callback_query' => [
-                'data'    => 'set_spin_price',
-                'message' => ['chat' => ['id' => $this->chatId]],
-                'from'    => ['id' => $this->regularUserId]
-            ]
+            'callback_query' => $callbackQuery
         ]);
 
         $response = $this->router->route($request);
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
     }
 
 
@@ -144,14 +152,26 @@ class RouterTest extends TestCase
                 'from'             => ['id' => $this->regularUserId],
                 'reply_to_message' => [
                     'message_id' => 123,
-                    'from'       => ['id' => $this->adminUserId]
+                    'from'       => ['id' => $this->adminUserId],
+                    'text'       => BotReplies::getSetPriceForSpinText()
                 ],
-                'text'             => '50'
+                'text'       => BotReplies::getSetPriceForSpinText()
             ]
         ]);
 
         $response = $this->router->route($request);
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(
+            200,
+            $response->getStatusCode(),
+            $response->getContent()
+        );
+    }
+
+    public function test_the_application_returns_a_successful_response(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
     }
 
     protected function createRequest(array $data): Request

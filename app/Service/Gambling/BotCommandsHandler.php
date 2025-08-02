@@ -18,12 +18,15 @@ class BotCommandsHandler
         $lastName = $message['from']['last_name'] ?? null;
 
         $name = $message['from']['first_name'];
+
         if (!is_null($lastName)) {
             $name .= ' ' . $message['from']['last_name'];
         }
+
         if (is_null($username)) {
             $username = $name;
         }
+
         $tgUserId = $message['from']['id'];
         \App\Service\Telegram\Users\User::register(
             $username,
