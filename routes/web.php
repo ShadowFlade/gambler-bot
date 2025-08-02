@@ -10,7 +10,7 @@ Route::get('/fuck_you', [\App\Http\Controllers\Controller::class,
 Route::prefix('api')->group(function () {
     Route::post(
         '/handle_gambling_message',
-        [\App\Service\Telegram\Router::class, 'route']
+        [\App\Http\Controllers\Telegram::class, 'index']
     )
         ->withoutMiddleware(['web', 'csrf', 'VerifyCsrfToken'])
         ->middleware(

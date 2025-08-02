@@ -9,7 +9,7 @@ class Message
 
     public function __construct()
     {
-        $this->message = $this->createMessageSchema(env('MAIN_CHAT_ID'));
+        $this->message = $this->createMessageSchema(env('TEST_CHAT_ID'));
     }
 
     /**

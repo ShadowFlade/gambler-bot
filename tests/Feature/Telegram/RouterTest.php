@@ -3,6 +3,7 @@
 namespace Tests\Feature\Telegram;
 
 use App\Models\User;
+use App\Service\Telegram\Bot;
 use App\Service\Telegram\BotReplies;
 use App\Service\Telegram\Enum\BotCommand;
 use App\Service\Telegram\Enum\MessageType;
@@ -11,6 +12,7 @@ use App\Service\Telegram\Router;
 use App\Service\Telegram\Users\Roles;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
+use Mockery;
 use Tests\TestCase;
 
 class RouterTest extends TestCase
@@ -83,6 +85,19 @@ class RouterTest extends TestCase
         $tgFactory->createMessage();
         $message = $tgFactory->getMessage();
         $request = $this->createRequest($message);
+
+        $mock = Mockery::mock(Bot::class);
+        $mock->shouldReceive('sendMessage')
+            ->andReturn(['SUCCESS' => true]);
+        $newResp = new \Illuminate\Http\Response(
+            [
+                'success' => true,
+                'error'   => null
+            ],
+            200
+        );
+        $mock->shouldReceive('sendRawMessage')->andReturn($newResp);
+        $this->app->instance(Bot::class, $mock);
 
         $response = $this->router->route($request);
         $this->assertEquals(200, $response->getStatusCode());

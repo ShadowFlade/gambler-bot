@@ -12,16 +12,17 @@ use Illuminate\Support\Facades\DB;
 class Statistics
 {
 
-    public function __construct(private string $chatID)
+    public function __construct(
+        private string $chatID,
+        private Bot    $bot,
+    )
     {
     }
 
     public function getMostWinsByCount(): object|null
     {
-        $tgBot = new Bot($this->chatID);
-
         $baseQuery = \App\Models\GamblingMessage::with(['user' => function ($query) {
-            $query->select('tg_user_id', 'name', );
+            $query->select('tg_user_id', 'name');
         }])->select(
             [
                 'user_id',
@@ -57,7 +58,7 @@ class Statistics
 
         if ($topWinners->isEmpty()) {
             $message = "Никто из вас неудачников ничего и никогда не выигрывал в своей жизни. Идите умойтесь.";
-            $tgBot->sendMessage($message);
+            $this->bot->sendMessage($message);
             return null;
         }
         foreach ($topWinners as $topWinner) {
@@ -121,7 +122,7 @@ class Statistics
         return $topWinners;
     }
 
-    public function getSpinPrice(?Bot $tgBot): int
+    public function getSpinPrice(): int
     {
         $price = Price::query()
             ->where('chat_id', '=', $this->chatID)
@@ -132,8 +133,8 @@ class Statistics
             ->limit(1)
             ->first();
 
-        if (empty($price) || empty($price->price) && !empty($tgBot)) {
-            $tgBot->sendMessage('Ставки сделаны, ставок больше нет (как и цен)');
+        if (empty($price) || empty($price->price) && !empty($this->bot)) {
+            $this->bot->sendMessage('Ставки сделаны, ставок больше нет (как и цен)');
         }
 
         return $price->price;

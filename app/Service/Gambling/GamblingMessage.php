@@ -61,7 +61,8 @@ class GamblingMessage
         $newMessage->is_win = $this->isWin($resultDicValues);
         $newMessage->win_value = $resultDicValues;
         $newMessage->user_id = $message['from']['id'];
-        $stats = new Statistics($chatId);
+        $tgBot = new Bot($chatId);
+        $stats = new Statistics($chatId, $tgBot);
         $price = $stats->getSpinPrice(null);
         $newMessage->spin_price = $price;
 
