@@ -58,14 +58,15 @@ class BotCommandsHandler
 
 
         foreach ($mostWinsByCounts->win_percent as $userID => $winPercentItem) {
+            $balanceRaw = -$winPercentItem->spentOnSpins +
+                $mostWinsByMoneyArr[$userID]['win_sum'];
             $balance = number_format(
-                -$winPercentItem->spentOnSpins +
-                $mostWinsByMoneyArr[$userID]['win_sum'],
+                $balanceRaw,
                 0,
                 ',',
                 '.'
             );
-
+            $winPercentItem->rawBalance = $balanceRaw;
             $winPercentItem->balance = $balance;
             $winPercentItem->nameMsg = $winPercentItem->name;
             $winPercentItem->restOfMsg = " : " .
@@ -79,7 +80,7 @@ class BotCommandsHandler
         usort(
             $mostWinsByCounts->win_percent,
             function($item1,$item2) {
-                return $item2->balance <=> $item1->balance;
+                return $item2->rawBalance <=> $item1->rawBalance;
         });
         foreach (array_values($mostWinsByCounts->win_percent) as $i =>
                  &$winPercentItem) {
