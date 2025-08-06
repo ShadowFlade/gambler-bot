@@ -1,21 +1,13 @@
 ## Startup
 * `composer run dev`
-## TODO
-* добавить сидеров(#quality)
-* настроить логирование по папкам - ASAP
-* отрефакторить `Statistics`(#quality)
-* добавить сортировку по балансу в `Statistics` - ASAP
-* подумать в каком внешнем хранилище хранить картинки (для фронта чисто) - (#quality)
-* поработать с версткой (#quality)
-* добавить на /releases #user - будет показывать только релизные заметки для юзеров. соответственно quality не будет показываться. (или наоборот добавить #admin и будут допом показываться #quality) - #quality
-* посмотреть есть ли роли для бота (чтобы бот видел меня как админа, а остальных нет, чтобы мне были доступны админовские команды) - #quality
-* ~~подсчитывать количество юзеров для отображения на главной странице /gambler #feature~~
-* лудик дня (#feature)
-* лудик месяца (#feature)
-* тесты? (#quality)
-* реакции (#feature #big)
-* админка (#quality #big)
-* добавить куда-то ссылку на репо (#quality)
+## Startup
+* composer run dev
 
-### если перестану быть гетеросексуалом
-* seo
+### Fresh startup
+* composer install
+* npm install
+* create database and update `.env` accordingly
+* php artisan migrate:install
+* php artisan key:generate
+* php artisan migrate
+* composer run dev
